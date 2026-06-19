@@ -48,6 +48,12 @@ export const C = {
   MIL_READY_STEP: 8, // max readiness move per year
   MIL_STR_STEP: 3, // max strength move per year
 
+  // diplomacy & trade
+  REL_STEP: 3, // relation drift toward baseline per year
+  REL_NOISE: 1.5,
+  K_TRADE: 0.08, // growth per unit trade balance
+  K_SANCTION: 0.04, // growth drag at full sanction pressure
+
   // social
   HEALTH_STEP: 4, // max health-index move per year
   INEQ_UNEMP: 0.03, // inequality pressure per unit unemployment gap

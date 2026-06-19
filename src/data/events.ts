@@ -199,6 +199,37 @@ export const EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'trade_dispute',
+    title: 'Trade Dispute',
+    titleZh: '贸易争端',
+    desc: 'A major partner slaps tariffs on your exports.',
+    descZh: '一个主要贸易伙伴对你的出口加征关税。',
+    weight: 2,
+    condition: (s) => s.turn > 1 && Object.keys(s.relations).length > 0,
+    options: [
+      {
+        label: 'Retaliate',
+        labelZh: '强硬反制',
+        apply: (s, ctx) => {
+          const ids = Object.keys(s.relations);
+          const t = ids[Math.floor(ctx.rng.next() * ids.length)];
+          s.relations[t] = clamp((s.relations[t] ?? 0) - 22, -100, 100);
+          s.approval = clamp(s.approval + 3, 0, 100);
+        },
+      },
+      {
+        label: 'Negotiate a deal',
+        labelZh: '谈判让步',
+        apply: (s, ctx) => {
+          const ids = Object.keys(s.relations);
+          const t = ids[Math.floor(ctx.rng.next() * ids.length)];
+          s.relations[t] = clamp((s.relations[t] ?? 0) + 6, -100, 100);
+          s.approval = clamp(s.approval - 2, 0, 100);
+        },
+      },
+    ],
+  },
 ];
 
 export function getEvent(id: string): EventDef | undefined {

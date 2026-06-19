@@ -39,6 +39,7 @@ const NUMERIC_FIELDS: (keyof GameState)[] = [
   'spendingPctGdp', 'debtPctGdp', 'creditRating', 'deficitPctGdp', 'reserves',
   'prosperity', 'score', 'inequality', 'healthIndex', 'qualityOfLife', 'legitimacy',
   'techLevel', 'militaryStrength', 'militaryReadiness', 'coupRisk',
+  'globalStanding', 'tradeBalance', 'sanctionPressure',
 ];
 
 describe('(a) determinism', () => {
@@ -125,6 +126,15 @@ describe('(e)+(f) clamps + normalization hold under 50-turn fuzz', () => {
         for (const k of ['militaryStrength', 'militaryReadiness', 'coupRisk'] as const) {
           expect(s[k]).toBeGreaterThanOrEqual(0);
           expect(s[k]).toBeLessThanOrEqual(100);
+        }
+        expect(s.globalStanding).toBeGreaterThanOrEqual(0);
+        expect(s.globalStanding).toBeLessThanOrEqual(100);
+        expect(s.sanctionPressure).toBeGreaterThanOrEqual(0);
+        expect(s.sanctionPressure).toBeLessThanOrEqual(100);
+        for (const r of Object.values(s.relations)) {
+          expect(Number.isFinite(r)).toBe(true);
+          expect(r).toBeGreaterThanOrEqual(-100);
+          expect(r).toBeLessThanOrEqual(100);
         }
         for (const k of ['healthIndex', 'qualityOfLife', 'legitimacy'] as const) {
           expect(s[k]).toBeGreaterThanOrEqual(0);

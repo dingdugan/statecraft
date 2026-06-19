@@ -23,6 +23,10 @@ export function deserialize(str: string): GameState | null {
       if (typeof o.militaryStrength !== 'number') o.militaryStrength = 50;
       if (typeof o.militaryReadiness !== 'number') o.militaryReadiness = 60;
       if (typeof o.coupRisk !== 'number') o.coupRisk = 0;
+      if (typeof o.relations !== 'object' || o.relations === null) o.relations = {};
+      if (typeof o.globalStanding !== 'number') o.globalStanding = 50;
+      if (typeof o.tradeBalance !== 'number') o.tradeBalance = 0;
+      if (typeof o.sanctionPressure !== 'number') o.sanctionPressure = 0;
       return o as GameState;
     }
     return null;

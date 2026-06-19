@@ -67,6 +67,12 @@ export interface GameState {
   militaryReadiness: number; // 0..100 (current funding adequacy)
   coupRisk: number; // 0..100 (derived)
 
+  // diplomacy & trade
+  relations: Record<string, number>; // relation -100..100 with each other country id
+  globalStanding: number; // 0..100 soft power / standing
+  tradeBalance: number; // net trade as fraction of GDP
+  sanctionPressure: number; // 0..100 (derived from hostile relations)
+
   // fiscal — player levers: taxRate, spendingPctGdp, allocation
   taxRate: number; // target revenue as fraction of GDP [0.10, 0.60]
   spendingPctGdp: number; // primary spending envelope, fraction of GDP [0.10, 0.70]

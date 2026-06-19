@@ -103,6 +103,15 @@ export function dashboardHTML(s: GameState): string {
     stat('政变风险', s.coupRisk.toFixed(0), tone3(s.coupRisk, 40, 70, true)),
   ].join('');
 
+  const allies = Object.values(s.relations).filter((r) => r > 40).length;
+  const rivals = Object.values(s.relations).filter((r) => r < -40).length;
+  const diplomacy = [
+    stat('国际声望', s.globalStanding.toFixed(0), tone3(s.globalStanding, 45, 30)),
+    stat('贸易差额', fmtSigned(s.tradeBalance), tone3(s.tradeBalance, 0, -0.03)),
+    stat('制裁压力', s.sanctionPressure.toFixed(0), tone3(s.sanctionPressure, 30, 60, true)),
+    stat('盟友 / 对手', `${allies} / ${rivals}`),
+  ].join('');
+
   const brief = briefings(s)
     .map((b) => `<li class="brief ${b.tone}"><span class="who">${b.who}</span>${esc(b.msg)}</li>`)
     .join('');
@@ -115,6 +124,7 @@ export function dashboardHTML(s: GameState): string {
       <section class="group"><h3>财政</h3>${fiscal}</section>
       <section class="group"><h3>政治</h3>${politics}</section>
       <section class="group"><h3>军事</h3>${military}</section>
+      <section class="group"><h3>外交</h3>${diplomacy}</section>
     </div>
     <section class="briefings"><h3>内阁简报</h3><ul>${brief}</ul></section>
   </div>`;

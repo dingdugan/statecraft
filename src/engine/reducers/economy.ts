@@ -13,7 +13,10 @@ export function stepEconomy(s: GameState, ctx: StepContext): GameState {
   const taxDrag = C.K_TAXDRAG * Math.max(0, s.taxRate - 0.52);
   const instDrag = C.K_INST * ((100 - s.stability) / 100);
 
-  const potential = s.trendGrowth + infraEff + techBonus + eduEff - agingDrag - taxDrag - instDrag;
+  const potential =
+    s.trendGrowth + infraEff + techBonus + eduEff +
+    C.K_TRADE * s.tradeBalance - C.K_SANCTION * (s.sanctionPressure / 100) -
+    agingDrag - taxDrag - instDrag;
   const realGrowth = clamp(potential + ctx.rng.normal(0, C.GROWTH_SD), -0.15, 0.15);
   s.gdpGrowthReal = realGrowth;
 

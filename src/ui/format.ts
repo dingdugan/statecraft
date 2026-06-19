@@ -115,6 +115,13 @@ export function briefings(s: GameState): Briefing[] {
   else if (s.militaryReadiness < 35)
     out.push({ who: DEF, msg: `部队战备不足（${s.militaryReadiness.toFixed(0)}），军费压缩过度。`, tone: 'warn' });
 
+  // diplomacy
+  const DIP = '外交大臣';
+  if (s.sanctionPressure >= 40)
+    out.push({ who: DIP, msg: `多国制裁挤压经济（压力 ${s.sanctionPressure.toFixed(0)}）。`, tone: 'bad' });
+  else if (s.globalStanding < 35)
+    out.push({ who: DIP, msg: `国际声望低迷（${s.globalStanding.toFixed(0)}），外交空间收窄。`, tone: 'warn' });
+
   if (out.length === 0)
     out.push({ who: '内阁', msg: '各项指标平稳，无紧急事项。', tone: 'good' });
 

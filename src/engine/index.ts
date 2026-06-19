@@ -3,6 +3,7 @@ import { getCountry } from '../data/countries';
 import { makeRngState } from './rng';
 import { computeScore } from './reducers/score';
 import { computeQol } from './reducers/social';
+import { initRelations } from './reducers/diplomacy';
 import { C } from './constants';
 import type { GameState } from './types';
 
@@ -48,6 +49,11 @@ export function newGame(countryId: string, seed: number): GameState {
     militaryReadiness: st.militaryReadiness,
     coupRisk: 0,
 
+    relations: {},
+    globalStanding: 0,
+    tradeBalance: 0,
+    sanctionPressure: 0,
+
     taxRate: st.taxRate,
     spendingPctGdp: st.spendingPctGdp,
     allocation: { ...st.allocation },
@@ -65,6 +71,7 @@ export function newGame(countryId: string, seed: number): GameState {
     log: [],
   };
   computeQol(s);
+  initRelations(s);
   computeScore(s);
   return s;
 }
