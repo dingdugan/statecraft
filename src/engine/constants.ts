@@ -39,6 +39,11 @@ export const C = {
   AGE_DRIFT: 15,
   TREND_POP_REF: 0.01,
 
+  // technology
+  TECH_STEP: 0.05, // max techLevel move per year
+  TECH_EDU: 0.006, // education contribution to tech target
+  K_TECH_GROWTH: 0.015, // growth bonus per unit techLevel above 1.0
+
   // social
   HEALTH_STEP: 4, // max health-index move per year
   INEQ_UNEMP: 0.03, // inequality pressure per unit unemployment gap

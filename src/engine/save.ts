@@ -19,6 +19,7 @@ export function deserialize(str: string): GameState | null {
       if (typeof o.healthIndex !== 'number') o.healthIndex = 70;
       if (typeof o.qualityOfLife !== 'number') o.qualityOfLife = 60;
       if (typeof o.legitimacy !== 'number') o.legitimacy = 55;
+      if (typeof o.techLevel !== 'number') o.techLevel = 1.0;
       return o as GameState;
     }
     return null;

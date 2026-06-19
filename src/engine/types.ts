@@ -37,7 +37,8 @@ export interface GameState {
   gdp: number; // nominal, USD billions
   gdpGrowthReal: number; // last realized real growth (fraction)
   sectors: Record<Sector, number>; // shares, sum = 1
-  productivity: number; // index, 1.00 = baseline
+  productivity: number; // index, 1.00 = baseline (tracks techLevel)
+  techLevel: number; // tech index 0.5..3, driven by R&D; feeds growth + productivity
   unemployment: number; // fraction [0.01, 0.45]
   inflation: number; // fraction [-0.05, 0.40]
 
@@ -95,6 +96,7 @@ export interface CountryStart {
   gdp: number;
   sectors: Record<Sector, number>;
   productivity: number;
+  techLevel: number;
   unemployment: number;
   inflation: number;
   population: number;

@@ -63,6 +63,7 @@ export function dashboardHTML(s: GameState): string {
     stat('通胀', fmtPct(s.inflation), tone3(Math.abs(s.inflation - 0.02), 0.04, 0.08, true)),
     stat('失业率', fmtPct(s.unemployment), tone3(s.unemployment, 0.08, 0.12, true)),
     stat('生产率指数', s.productivity.toFixed(2)),
+    stat('科技水平', s.techLevel.toFixed(2), tone3(s.techLevel, 1.0, 0.7)),
   ].join('');
 
   const pop = [

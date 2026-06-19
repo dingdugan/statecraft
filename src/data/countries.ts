@@ -12,7 +12,8 @@
 //     inequality (≈ Gini coefficient)
 //   GAME PROXY / CALIBRATED (not a real poll or statistic — a starting position):
 //     approval, stability, educationLevel (0..100 index), healthIndex (0..100),
-//     laborParticipation, creditRating (0..20 game scale), allocation (budget tilt)
+//     laborParticipation, creditRating (0..20 game scale), allocation (budget tilt),
+//     productivity / techLevel (0.5..3 index)
 //
 // TODO(loop): verify/refine specific figures against named sources; expand 6 → ~16.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -34,6 +35,7 @@ export const COUNTRIES: CountryDef[] = [
       gdp: 4500,
       sectors: { agriculture: 0.01, industry: 0.27, services: 0.72 },
       productivity: 1.15,
+      techLevel: 1.4,
       unemployment: 0.035,
       inflation: 0.025,
       population: 84,
@@ -67,6 +69,7 @@ export const COUNTRIES: CountryDef[] = [
       gdp: 4100,
       sectors: { agriculture: 0.01, industry: 0.29, services: 0.7 },
       productivity: 1.1,
+      techLevel: 1.5,
       unemployment: 0.026,
       inflation: 0.028,
       population: 124,
@@ -100,6 +103,7 @@ export const COUNTRIES: CountryDef[] = [
       gdp: 400,
       sectors: { agriculture: 0.24, industry: 0.31, services: 0.45 },
       productivity: 0.7,
+      techLevel: 0.6,
       unemployment: 0.13,
       inflation: 0.28,
       population: 223,
@@ -133,6 +137,7 @@ export const COUNTRIES: CountryDef[] = [
       gdp: 500,
       sectors: { agriculture: 0.0, industry: 0.24, services: 0.76 },
       productivity: 1.25,
+      techLevel: 1.6,
       unemployment: 0.02,
       inflation: 0.03,
       population: 5.9,
@@ -166,6 +171,7 @@ export const COUNTRIES: CountryDef[] = [
       gdp: 1070,
       sectors: { agriculture: 0.02, industry: 0.55, services: 0.43 },
       productivity: 0.95,
+      techLevel: 0.9,
       unemployment: 0.05,
       inflation: 0.025,
       population: 33,
@@ -199,6 +205,7 @@ export const COUNTRIES: CountryDef[] = [
       gdp: 18500,
       sectors: { agriculture: 0.07, industry: 0.38, services: 0.55 },
       productivity: 0.85,
+      techLevel: 1.1,
       unemployment: 0.05,
       inflation: 0.005,
       population: 1410,

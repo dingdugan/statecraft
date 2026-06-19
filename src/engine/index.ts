@@ -23,6 +23,7 @@ export function newGame(countryId: string, seed: number): GameState {
     gdpGrowthReal: c.trendGrowth,
     sectors: { ...st.sectors },
     productivity: st.productivity,
+    techLevel: st.techLevel,
     unemployment: st.unemployment,
     inflation: st.inflation,
 

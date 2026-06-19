@@ -82,6 +82,10 @@ export function briefings(s: GameState): Briefing[] {
     out.push({ who: ECON, msg: `经济实际增长 ${fmtSigned(s.gdpGrowthReal)}，势头不错。`, tone: 'good' });
   else if (s.gdpGrowthReal < 0)
     out.push({ who: ECON, msg: `经济在收缩（${fmtSigned(s.gdpGrowthReal)}）。`, tone: 'warn' });
+  if (s.techLevel > 1.8)
+    out.push({ who: '科技顾问', msg: `科技水平领先（${s.techLevel.toFixed(2)}），生产率持续走高。`, tone: 'good' });
+  else if (s.techLevel < 0.8)
+    out.push({ who: '科技顾问', msg: `科技基础薄弱（${s.techLevel.toFixed(2)}），增长后劲不足。`, tone: 'warn' });
 
   // politics
   if (s.unrest >= 70)

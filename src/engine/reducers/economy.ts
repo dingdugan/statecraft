@@ -7,13 +7,13 @@ import { clamp, spendEffect } from '../util';
  *  See docs/design-engine.md §4 step 2. Reads last turn's deficit (fiscal runs after). */
 export function stepEconomy(s: GameState, ctx: StepContext): GameState {
   const infraEff = spendEffect(s, 'infrastructure', C.GAIN_GROWTH);
-  const rndEff = spendEffect(s, 'rnd', C.GAIN_GROWTH);
   const eduEff = C.K_EDU * ((s.educationLevel - 50) / 50);
+  const techBonus = C.K_TECH_GROWTH * (s.techLevel - 1); // R&D's growth effect flows via techLevel
   const agingDrag = C.K_AGE * (Math.max(0, s.medianAge - 42) / 10);
   const taxDrag = C.K_TAXDRAG * Math.max(0, s.taxRate - 0.52);
   const instDrag = C.K_INST * ((100 - s.stability) / 100);
 
-  const potential = s.trendGrowth + infraEff + rndEff + eduEff - agingDrag - taxDrag - instDrag;
+  const potential = s.trendGrowth + infraEff + techBonus + eduEff - agingDrag - taxDrag - instDrag;
   const realGrowth = clamp(potential + ctx.rng.normal(0, C.GROWTH_SD), -0.15, 0.15);
   s.gdpGrowthReal = realGrowth;
 
@@ -37,11 +37,6 @@ export function stepEconomy(s: GameState, ctx: StepContext): GameState {
     0.45,
   );
 
-  // productivity drifts slowly with education + R&D (display stat in MVP)
-  s.productivity = clamp(
-    s.productivity + C.K_PROD_EDU * ((s.educationLevel - 50) / 50) / 100 + Math.max(0, rndEff) * 0.5,
-    0.3,
-    3,
-  );
+  // productivity is now driven by techLevel in stepTech (runs before this)
   return s;
 }

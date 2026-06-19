@@ -3,6 +3,7 @@ import type { GameState, PendingDecisions } from './types';
 import type { StepContext } from './context';
 import { applyDecisions } from './reducers/decisions';
 import { stepDemographics } from './reducers/demographics';
+import { stepTech } from './reducers/tech';
 import { stepEconomy } from './reducers/economy';
 import { stepFiscal } from './reducers/fiscal';
 import { stepSocial } from './reducers/social';
@@ -23,6 +24,7 @@ export function advanceTurn(state: GameState, decisions: PendingDecisions = {}):
 
   applyDecisions(s, ctx);
   stepDemographics(s, ctx);
+  stepTech(s, ctx);
   stepEconomy(s, ctx);
   stepFiscal(s, ctx);
   stepSocial(s, ctx);
