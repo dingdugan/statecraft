@@ -84,6 +84,21 @@ resources → economy → fiscal → social → politics → military → war �
 5. **History view**: track key stats across turns (a text sparkline keeps it on-theme).
 6. **Ship it**: run `/qa` + `/code-review` over the full game, then deploy the static bundle.
 
+## Update — post-overnight review/QA pass (commit `26ccb83`)
+
+A follow-up adversarial review + balance sim + browser QA ran after the loop. Fixed:
+- **P0** `deserialize` now backfills `traits` / `trendGrowth` / `lowStabilityStreak` /
+  `deficitPctGdp` (a partial/corrupt/old save previously crashed or NaN-poisoned on load);
+  regression test `(j)` added.
+- **P1** victory was reachable by ~turn 7 on passive play → added a 20-year tenure floor +
+  raised SUPERPOWER to streak ≥8 at score ≥87. Wins now land turn 20+.
+- **P1** `K_RESOURCE` 0.3 → 0.06 (it could add +9pp growth, dwarfing other terms).
+- **P2** end-year off-by-one fixed.
+
+9/9 Vitest gates green; 0 numeric anomalies across 18 playthroughs. **Still deferred**: the
+deeper score rebalance (nominal-GDP wealth saturation lets strong states reach the
+floor passively) and country expansion 6 → ~16.
+
 ## How to run / play
 
 ```bash
