@@ -5,6 +5,7 @@ import { applyDecisions } from './reducers/decisions';
 import { stepDemographics } from './reducers/demographics';
 import { stepEconomy } from './reducers/economy';
 import { stepFiscal } from './reducers/fiscal';
+import { stepSocial } from './reducers/social';
 import { stepPolitics } from './reducers/politics';
 import { stepScore } from './reducers/score';
 import { maybeFireEvent } from './reducers/events';
@@ -24,6 +25,7 @@ export function advanceTurn(state: GameState, decisions: PendingDecisions = {}):
   stepDemographics(s, ctx);
   stepEconomy(s, ctx);
   stepFiscal(s, ctx);
+  stepSocial(s, ctx);
   stepPolitics(s, ctx);
   stepScore(s, ctx);
   maybeFireEvent(s, ctx);

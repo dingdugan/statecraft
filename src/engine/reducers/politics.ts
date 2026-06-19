@@ -29,7 +29,8 @@ export function stepPolitics(s: GameState, ctx: StepContext): GameState {
     s.unrest +
       Math.max(0, (45 - s.approval) / 6) +
       Math.max(0, s.unemployment - 0.1) * 60 +
-      Math.max(0, s.inflation - 0.06) * 40 -
+      Math.max(0, s.inflation - 0.06) * 40 +
+      Math.max(0, s.inequality - 0.45) * C.UNREST_INEQ -
       Math.min(4, C.UNREST_DECAY * (s.stability / 100)),
     0,
     100,

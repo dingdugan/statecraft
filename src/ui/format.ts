@@ -95,6 +95,15 @@ export function briefings(s: GameState): Briefing[] {
   if (s.govType === 'democracy' && s.termYearsLeft <= 1 && s.status === 'playing')
     out.push({ who: HOME, msg: `大选临近（剩 ${s.termYearsLeft} 年），支持率低于 35 将失去政权。`, tone: 'warn' });
 
+  // social
+  const SOC = '民政大臣';
+  if (s.inequality > 0.55)
+    out.push({ who: SOC, msg: `贫富差距悬殊（基尼 ${s.inequality.toFixed(2)}），社会裂痕加深。`, tone: 'bad' });
+  else if (s.inequality > 0.45)
+    out.push({ who: SOC, msg: `不平等在扩大（基尼 ${s.inequality.toFixed(2)}）。`, tone: 'warn' });
+  if (s.healthIndex < 45)
+    out.push({ who: SOC, msg: `医疗体系薄弱（健康指数 ${s.healthIndex.toFixed(0)}）。`, tone: 'warn' });
+
   if (out.length === 0)
     out.push({ who: '内阁', msg: '各项指标平稳，无紧急事项。', tone: 'good' });
 

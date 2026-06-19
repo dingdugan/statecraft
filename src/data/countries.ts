@@ -8,10 +8,11 @@
 //
 //   REAL-MAGNITUDE (order-of-magnitude grounded in World Bank / IMF WEO / SIPRI):
 //     gdp, population, popGrowth, medianAge, unemployment, inflation, debtPctGdp,
-//     sectors, taxRate (≈ revenue/GDP), spendingPctGdp, reserves, trendGrowth
+//     sectors, taxRate (≈ revenue/GDP), spendingPctGdp, reserves, trendGrowth,
+//     inequality (≈ Gini coefficient)
 //   GAME PROXY / CALIBRATED (not a real poll or statistic — a starting position):
-//     approval, stability, educationLevel (0..100 index), laborParticipation,
-//     creditRating (0..20 game scale), allocation (qualitative budget tilt)
+//     approval, stability, educationLevel (0..100 index), healthIndex (0..100),
+//     laborParticipation, creditRating (0..20 game scale), allocation (budget tilt)
 //
 // TODO(loop): verify/refine specific figures against named sources; expand 6 → ~16.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -40,6 +41,8 @@ export const COUNTRIES: CountryDef[] = [
       medianAge: 46,
       laborParticipation: 0.6,
       educationLevel: 82,
+      inequality: 0.32,
+      healthIndex: 88,
       approval: 50,
       stability: 80,
       taxRate: 0.42,
@@ -71,6 +74,8 @@ export const COUNTRIES: CountryDef[] = [
       medianAge: 49,
       laborParticipation: 0.62,
       educationLevel: 85,
+      inequality: 0.33,
+      healthIndex: 90,
       approval: 45,
       stability: 78,
       taxRate: 0.34,
@@ -102,6 +107,8 @@ export const COUNTRIES: CountryDef[] = [
       medianAge: 17,
       laborParticipation: 0.55,
       educationLevel: 45,
+      inequality: 0.42,
+      healthIndex: 45,
       approval: 42,
       stability: 45,
       taxRate: 0.1,
@@ -133,6 +140,8 @@ export const COUNTRIES: CountryDef[] = [
       medianAge: 42,
       laborParticipation: 0.68,
       educationLevel: 88,
+      inequality: 0.46,
+      healthIndex: 90,
       approval: 60,
       stability: 85,
       taxRate: 0.18,
@@ -164,6 +173,8 @@ export const COUNTRIES: CountryDef[] = [
       medianAge: 32,
       laborParticipation: 0.55,
       educationLevel: 65,
+      inequality: 0.45,
+      healthIndex: 70,
       approval: 58,
       stability: 72,
       taxRate: 0.3,
@@ -195,6 +206,8 @@ export const COUNTRIES: CountryDef[] = [
       medianAge: 39,
       laborParticipation: 0.66,
       educationLevel: 72,
+      inequality: 0.38,
+      healthIndex: 75,
       approval: 60,
       stability: 75,
       taxRate: 0.28,

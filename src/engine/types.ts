@@ -48,6 +48,12 @@ export interface GameState {
   laborParticipation: number;
   educationLevel: number; // index 0..100
 
+  // social
+  inequality: number; // Gini, ~0.20..0.70
+  healthIndex: number; // 0..100
+  qualityOfLife: number; // 0..100 (derived)
+  legitimacy: number; // 0..100 (derived)
+
   // government / politics
   approval: number; // 0..100
   stability: number; // 0..100
@@ -96,6 +102,8 @@ export interface CountryStart {
   medianAge: number;
   laborParticipation: number;
   educationLevel: number;
+  inequality: number;
+  healthIndex: number;
   approval: number;
   stability: number;
   taxRate: number;

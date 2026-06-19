@@ -14,6 +14,11 @@ export function deserialize(str: string): GameState | null {
       o.usedEventIds ??= [];
       o.usedPolicyIds ??= [];
       o.log ??= [];
+      // numeric fields added by later system iterations — default to prevent NaN on old saves
+      if (typeof o.inequality !== 'number') o.inequality = 0.4;
+      if (typeof o.healthIndex !== 'number') o.healthIndex = 70;
+      if (typeof o.qualityOfLife !== 'number') o.qualityOfLife = 60;
+      if (typeof o.legitimacy !== 'number') o.legitimacy = 55;
       return o as GameState;
     }
     return null;

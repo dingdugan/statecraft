@@ -39,6 +39,13 @@ export const C = {
   AGE_DRIFT: 15,
   TREND_POP_REF: 0.01,
 
+  // social
+  HEALTH_STEP: 4, // max health-index move per year
+  INEQ_UNEMP: 0.03, // inequality pressure per unit unemployment gap
+  INEQ_WELFARE: 0.02, // inequality relief from welfare adequacy
+  INEQ_EDU: 0.004, // inequality relief from education
+  UNREST_INEQ: 40, // unrest pressure from Gini above 0.45
+
   // scoring
   REF_PC: 5000,
 

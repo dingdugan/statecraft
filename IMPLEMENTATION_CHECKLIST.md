@@ -20,9 +20,6 @@
 - [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
       验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
       证据: <file:line + 来源标注>
-- [ ] 加 Social 系统：医疗/教育产出、不平等(Gini)、生活质量，接入 unrest/score
-      验收: 新 reducer 纯函数 + UI 面板 + 测试；score 升级为含 legitimacy 因子
-      证据: <测试名 + 截图>
 - [ ] 加 Technology/研发系统：R&D → 科技水平 → 部门生产率乘数；研究项目
       验收: 生产率不再近似静态、与 R&D 支出挂钩；有测试
       证据: <测试名>
@@ -31,6 +28,12 @@
       证据: <逐条补>
 
 ## Done
+
+### Loop 迭代（overnight，深度优先）
+
+- [x] Social 系统：健康指数 / 不平等(Gini) / 生活质量 / 合法性；接入 unrest 与 score
+      验收: 新 reducer 纯函数、UI「社会」组、score 升级为 3 因子 cbrt(繁荣×稳定×合法性)、fuzz 钳制新字段
+      证据: src/engine/reducers/social.ts；reducers/score.ts(legitimacy)；advanceTurn.ts(stepSocial 插入 fiscal→politics 之间)；engine.test.ts NUMERIC_FIELDS+bounds → 6/6 绿；浏览器尼日利亚「社会」组截图(生活质量43/健康45/基尼0.42/合法性45)
 
 ### MVP — 全部完成并经浏览器冷启动 walkthrough 验证（2026-06-19）
 

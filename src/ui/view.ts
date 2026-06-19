@@ -89,6 +89,13 @@ export function dashboardHTML(s: GameState): string {
     ...(s.govType === 'democracy' ? [stat('距下次大选', `${Math.max(0, s.termYearsLeft)} 年`)] : []),
   ].join('');
 
+  const social = [
+    stat('生活质量', s.qualityOfLife.toFixed(0), tone3(s.qualityOfLife, 55, 35)),
+    stat('健康指数', s.healthIndex.toFixed(0), tone3(s.healthIndex, 55, 35)),
+    stat('不平等(基尼)', s.inequality.toFixed(2), tone3(s.inequality, 0.42, 0.55, true)),
+    stat('合法性', s.legitimacy.toFixed(0), tone3(s.legitimacy, 50, 35)),
+  ].join('');
+
   const brief = briefings(s)
     .map((b) => `<li class="brief ${b.tone}"><span class="who">${b.who}</span>${esc(b.msg)}</li>`)
     .join('');
@@ -97,6 +104,7 @@ export function dashboardHTML(s: GameState): string {
     <div class="vitals">
       <section class="group"><h3>经济</h3>${econ}</section>
       <section class="group"><h3>人口</h3>${pop}</section>
+      <section class="group"><h3>社会</h3>${social}</section>
       <section class="group"><h3>财政</h3>${fiscal}</section>
       <section class="group"><h3>政治</h3>${politics}</section>
     </div>

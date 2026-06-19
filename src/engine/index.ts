@@ -2,6 +2,7 @@
 import { getCountry } from '../data/countries';
 import { makeRngState } from './rng';
 import { computeScore } from './reducers/score';
+import { computeQol } from './reducers/social';
 import { C } from './constants';
 import type { GameState } from './types';
 
@@ -31,6 +32,11 @@ export function newGame(countryId: string, seed: number): GameState {
     laborParticipation: st.laborParticipation,
     educationLevel: st.educationLevel,
 
+    inequality: st.inequality,
+    healthIndex: st.healthIndex,
+    qualityOfLife: 0,
+    legitimacy: 0,
+
     approval: st.approval,
     stability: st.stability,
     unrest: 0,
@@ -53,6 +59,7 @@ export function newGame(countryId: string, seed: number): GameState {
     usedPolicyIds: [],
     log: [],
   };
+  computeQol(s);
   computeScore(s);
   return s;
 }

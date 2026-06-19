@@ -13,7 +13,17 @@ export function computeScore(s: GameState): void {
   const jobs = clamp(20 * (1 - s.unemployment / 0.25), 0, 20);
   const prices = clamp(15 * (1 - Math.min(1, Math.abs(s.inflation - 0.02) / 0.1)), 0, 15);
   s.prosperity = clamp(wealth + growth + jobs + prices, 0, 100);
-  s.score = clamp(Math.sqrt(Math.max(0, s.prosperity) * Math.max(0, s.stability)), 0, 100);
+
+  // legitimacy: approval + quality of life, docked for inequality
+  const ineqPenalty = clamp(((s.inequality - 0.25) / 0.4) * 100, 0, 100);
+  s.legitimacy = clamp(0.45 * s.approval + 0.35 * s.qualityOfLife + 0.2 * (100 - ineqPenalty), 0, 100);
+
+  // composite = geometric mean of prosperity × stability × legitimacy (0..100)
+  s.score = clamp(
+    Math.cbrt(Math.max(0, s.prosperity) * Math.max(0, s.stability) * Math.max(0, s.legitimacy)),
+    0,
+    100,
+  );
 }
 
 export function stepScore(s: GameState, _ctx: StepContext): GameState {

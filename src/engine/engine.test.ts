@@ -37,7 +37,7 @@ const NUMERIC_FIELDS: (keyof GameState)[] = [
   'gdp', 'gdpGrowthReal', 'productivity', 'unemployment', 'inflation', 'population',
   'popGrowth', 'medianAge', 'approval', 'stability', 'unrest', 'taxRate',
   'spendingPctGdp', 'debtPctGdp', 'creditRating', 'deficitPctGdp', 'reserves',
-  'prosperity', 'score',
+  'prosperity', 'score', 'inequality', 'healthIndex', 'qualityOfLife', 'legitimacy',
 ];
 
 describe('(a) determinism', () => {
@@ -117,6 +117,12 @@ describe('(e)+(f) clamps + normalization hold under 50-turn fuzz', () => {
         }
         expect(s.creditRating).toBeGreaterThanOrEqual(0);
         expect(s.creditRating).toBeLessThanOrEqual(20);
+        expect(s.inequality).toBeGreaterThanOrEqual(0.2);
+        expect(s.inequality).toBeLessThanOrEqual(0.7);
+        for (const k of ['healthIndex', 'qualityOfLife', 'legitimacy'] as const) {
+          expect(s[k]).toBeGreaterThanOrEqual(0);
+          expect(s[k]).toBeLessThanOrEqual(100);
+        }
         const allocSum = Object.values(s.allocation).reduce((a, b) => a + b, 0);
         expect(allocSum).toBeCloseTo(1, 6);
       }
