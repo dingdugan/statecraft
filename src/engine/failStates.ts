@@ -6,7 +6,7 @@ import { C } from './constants';
 export function checkFailStates(s: GameState, ctx: StepContext): GameState {
   if (s.status !== 'playing') return s;
 
-  s.victoryStreak = s.score >= 85 ? s.victoryStreak + 1 : 0;
+  s.victoryStreak = s.score >= 87 ? s.victoryStreak + 1 : 0;
 
   if (s.marketAccessLostYears >= 2 && s.reserves <= 0) {
     s.status = 'bankrupt';
@@ -29,21 +29,24 @@ export function checkFailStates(s: GameState, ctx: StepContext): GameState {
     return s;
   }
 
-  // victory conditions (checked after fail states — a collapsing state does not win)
-  const gdpPerCap = (s.gdp * 1e9) / (s.population * 1e6);
-  const allies = Object.values(s.relations).filter((r) => r > 40).length;
-  let win: string | null = null;
-  if (s.victoryStreak >= 5) win = '超级强国（治国评分长期居于 85+）';
-  else if (gdpPerCap >= 100000 && s.qualityOfLife >= 70) win = '富庶之邦（人均 GDP 破 $100k、民生优渥）';
-  else if (s.globalStanding >= 75 && allies >= 3 && !s.warWith && s.warExhaustion < 5)
-    win = '世界调停者（声望卓著、盟友环绕、长享和平）';
-  else if (s.climateStress <= 10 && s.qualityOfLife >= 80 && s.emissions <= 45)
-    win = '绿色文明（低碳、高生活质量）';
-  if (win) {
-    s.status = 'victory';
-    s.endReason = `达成「${win}」—— 你在 ${ctx.year} 年缔造了一个时代。`;
-    ctx.log.push({ kind: 'info', msg: `🏆 胜利：${win}` });
-    return s;
+  // victory — only after a meaningful tenure (>= 20 years), so a win is earned over decades,
+  // not handed out for pressing "advance" a few times (collapse already returned above)
+  if (s.turn >= 20) {
+    const gdpPerCap = (s.gdp * 1e9) / (s.population * 1e6);
+    const allies = Object.values(s.relations).filter((r) => r > 40).length;
+    let win: string | null = null;
+    if (s.victoryStreak >= 8) win = '超级强国（治国评分长期居于 87+）';
+    else if (gdpPerCap >= 100000 && s.qualityOfLife >= 70) win = '富庶之邦（人均 GDP 破 $100k、民生优渥）';
+    else if (s.globalStanding >= 75 && allies >= 3 && !s.warWith && s.warExhaustion < 5)
+      win = '世界调停者（声望卓著、盟友环绕、长享和平）';
+    else if (s.climateStress <= 10 && s.qualityOfLife >= 80 && s.emissions <= 45)
+      win = '绿色文明（低碳、高生活质量）';
+    if (win) {
+      s.status = 'victory';
+      s.endReason = `达成「${win}」—— 你在 ${ctx.year} 年缔造了一个时代。`;
+      ctx.log.push({ kind: 'info', msg: `🏆 胜利：${win}` });
+      return s;
+    }
   }
 
   if (s.year >= C.END_YEAR) {

@@ -41,8 +41,12 @@ export function advanceTurn(state: GameState, decisions: PendingDecisions = {}):
   maybeFireEvent(s, ctx);
   checkFailStates(s, ctx);
 
-  s.year += 1;
-  s.turn += 1;
+  // only advance the calendar while the game is live, so an end-state's year matches
+  // the year shown on the end screen (no off-by-one)
+  if (s.status === 'playing') {
+    s.year += 1;
+    s.turn += 1;
+  }
   s.rng = ctx.rng.state;
   s.log = ctx.log;
   return s;

@@ -67,7 +67,7 @@ export const C = {
   COMMODITY_VOL: 0.15, // commodity-price walk volatility
   DEPLETE_RATE: 0.4, // depletion per year for resource economies
   CLIMATE_ACCUM: 0.05, // climate stress accrued per emissions point above 40
-  K_RESOURCE: 0.3, // growth per unit resource income
+  K_RESOURCE: 0.06, // growth per unit resource income (comparable to other terms, not 3-6x)
   K_CLIMATE: 0.02, // growth drag at full climate stress
 
   // social

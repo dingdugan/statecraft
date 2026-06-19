@@ -1,5 +1,6 @@
 // Save/load is trivial because GameState is plain JSON-serializable data (RNG included).
 import type { GameState } from './types';
+import { getCountry } from '../data/countries';
 
 export function serialize(s: GameState): string {
   return JSON.stringify(s);
@@ -11,6 +12,12 @@ export function deserialize(str: string): GameState | null {
     const o = JSON.parse(str) as Partial<GameState> | null;
     if (o && typeof o === 'object' && typeof o.countryId === 'string' && typeof o.status === 'string') {
       // backfill array fields added in later versions so older saves stay loadable
+      // base fields (present in real saves; backfilled defensively for partial/corrupt/old blobs
+      // — deserialize is the only validation boundary, so it must guarantee what reducers read)
+      if (!Array.isArray(o.traits)) o.traits = [...getCountry(o.countryId as string).traits];
+      if (typeof o.trendGrowth !== 'number') o.trendGrowth = getCountry(o.countryId as string).trendGrowth;
+      if (typeof o.lowStabilityStreak !== 'number') o.lowStabilityStreak = 0;
+      if (typeof o.deficitPctGdp !== 'number') o.deficitPctGdp = 0;
       o.usedEventIds ??= [];
       o.usedPolicyIds ??= [];
       o.log ??= [];

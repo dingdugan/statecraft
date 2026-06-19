@@ -187,3 +187,23 @@ describe('(i) victory reachable', () => {
     expect(s.status).toBe('victory');
   });
 });
+
+describe('(j) save migration — a partial/old save loads and advances without crashing', () => {
+  it('deserialize backfills missing fields; advanceTurn stays finite', () => {
+    const full = newGame('DE', 1);
+    // simulate a save written before later fields existed
+    const partial = { ...full } as Record<string, unknown>;
+    for (const k of [
+      'traits', 'trendGrowth', 'lowStabilityStreak', 'deficitPctGdp', 'techLevel',
+      'relations', 'commodityPrice', 'resourceDepletion', 'warWith', 'victoryStreak',
+    ]) {
+      delete partial[k];
+    }
+    const loaded = deserialize(JSON.stringify(partial));
+    expect(loaded).not.toBeNull();
+    let s = loaded!;
+    for (let i = 0; i < 8; i++) s = play(s); // must not throw
+    expect(Number.isFinite(s.gdp)).toBe(true);
+    expect(Number.isFinite(s.score)).toBe(true);
+  });
+});
