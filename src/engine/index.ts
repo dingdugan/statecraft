@@ -7,6 +7,8 @@ import { initRelations, computeDiplomacy } from './reducers/diplomacy';
 import { computeResources } from './reducers/resources';
 import { getScenario } from '../data/scenarios';
 import { C } from './constants';
+import { COUNTRY_IDS } from '../data/countries';
+import type { WorldState } from './world';
 import type { GameState } from './types';
 
 export function newGame(countryId: string, seed: number, scenarioId = 'standard'): GameState {
@@ -97,7 +99,20 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
   return s;
 }
 
+/** Build a full 16-country world. The player country uses the given seed + scenario;
+ *  every other country gets a derived seed and the standard scenario. */
+export function newWorld(playerId: string, seed: number, scenarioId = 'standard'): WorldState {
+  const countries: Record<string, GameState> = {};
+  COUNTRY_IDS.forEach((id, i) => {
+    const cseed = id === playerId ? seed : ((seed + (i + 1) * 0x9e3779b1) | 0) & 0x7fffffff;
+    countries[id] = newGame(id, cseed, id === playerId ? scenarioId : 'standard');
+  });
+  return { countries, playerId, turn: 0, news: [] };
+}
+
 export { advanceTurn } from './advanceTurn';
+export { advanceWorld } from './world';
+export type { WorldState, NewsItem } from './world';
 export { resolveEventChoice } from './reducers/events';
 export { interestRate } from './reducers/fiscal';
 export { getCountry, COUNTRIES, COUNTRY_IDS } from '../data/countries';

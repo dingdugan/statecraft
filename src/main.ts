@@ -1,12 +1,10 @@
 import './style.css';
-import { newGame, advanceTurn, resolveEventChoice } from './engine';
-import type { Allocation, GameState, PendingDecisions } from './engine/types';
+import { newWorld, advanceWorld, resolveEventChoice } from './engine';
+import type { Allocation, GameState, PendingDecisions, WorldState } from './engine';
 import { SPEND_CATEGORIES, normalizeAllocation } from './engine/util';
 import { getCountry } from './data/countries';
 import { GOV_LABELS } from './ui/format';
-import {
-  autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS,
-} from './ui/saveLoad';
+import { autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS } from './ui/saveLoad';
 import {
   menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML,
 } from './ui/view';
@@ -14,7 +12,7 @@ import {
 type Screen = 'menu' | 'play' | 'end';
 interface App {
   screen: Screen;
-  game: GameState | null;
+  world: WorldState | null;
   pendingAlloc: Allocation;
   pendingTax: number;
   pendingSpend: number;
@@ -25,15 +23,12 @@ interface App {
 const esc = (x: string) => x.replace(/</g, '&lt;');
 
 function evenAlloc(): Allocation {
-  return SPEND_CATEGORIES.reduce(
-    (o, c) => ((o[c] = 1 / SPEND_CATEGORIES.length), o),
-    {} as Allocation,
-  );
+  return SPEND_CATEGORIES.reduce((o, c) => ((o[c] = 1 / SPEND_CATEGORIES.length), o), {} as Allocation);
 }
 
 const app: App = {
   screen: 'menu',
-  game: null,
+  world: null,
   pendingAlloc: evenAlloc(),
   pendingTax: 0.3,
   pendingSpend: 0.3,
@@ -42,6 +37,11 @@ const app: App = {
 };
 
 const root = document.getElementById('app')!;
+
+/** The player's country (the one the dashboard renders). */
+function player(): GameState | null {
+  return app.world ? app.world.countries[app.world.playerId] : null;
+}
 
 function syncPendingFromGame(g: GameState): void {
   app.pendingAlloc = { ...g.allocation };
@@ -55,46 +55,47 @@ function startGame(id: string): void {
   let seed = Date.now() & 0x7fffffff;
   for (let i = 0; i < id.length; i++) seed = (seed * 31 + id.charCodeAt(i)) | 0;
   seed &= 0x7fffffff;
-  const g = newGame(id, seed, app.selectedScenario);
-  app.game = g;
+  app.world = newWorld(id, seed, app.selectedScenario);
   app.screen = 'play';
-  syncPendingFromGame(g);
-  autoSave(g);
+  syncPendingFromGame(player()!);
+  autoSave(app.world);
   render();
 }
 
 function continueGame(): void {
-  const g = loadAuto();
-  if (!g) return;
-  app.game = g;
-  app.screen = g.status === 'playing' ? 'play' : 'end';
-  syncPendingFromGame(g);
+  const w = loadAuto();
+  if (!w) return;
+  app.world = w;
+  const p = w.countries[w.playerId];
+  app.screen = p.status === 'playing' ? 'play' : 'end';
+  syncPendingFromGame(p);
   render();
 }
 
 function doAdvance(): void {
-  if (!app.game || app.game.pendingEventId || app.game.status !== 'playing') return;
+  const p = player();
+  if (!app.world || !p || p.pendingEventId || p.status !== 'playing') return;
   const decisions: PendingDecisions = {
     taxRate: app.pendingTax,
     spendingPctGdp: app.pendingSpend,
     allocation: normalizeAllocation(app.pendingAlloc),
     enactPolicyIds: app.pendingPolicies,
   };
-  const next = advanceTurn(app.game, decisions);
-  app.game = next;
-  autoSave(next);
-  if (next.status !== 'playing') app.screen = 'end';
-  else syncPendingFromGame(next);
+  app.world = advanceWorld(app.world, decisions);
+  autoSave(app.world);
+  const np = player()!;
+  if (np.status !== 'playing') app.screen = 'end';
+  else syncPendingFromGame(np);
   render();
 }
 
 function doResolve(opt: number): void {
-  if (!app.game?.pendingEventId) return;
+  const p = player();
+  if (!app.world || !p?.pendingEventId) return;
   if (!Number.isInteger(opt) || opt < 0) return;
-  const next = resolveEventChoice(app.game, app.game.pendingEventId, opt);
-  app.game = next;
-  autoSave(next);
-  if (next.status !== 'playing') app.screen = 'end';
+  app.world.countries[app.world.playerId] = resolveEventChoice(p, p.pendingEventId, opt);
+  autoSave(app.world);
+  if (player()!.status !== 'playing') app.screen = 'end';
   render();
 }
 
@@ -130,19 +131,15 @@ function saveBarHTML(): string {
 }
 
 function render(): void {
-  if (app.screen === 'menu') {
+  if (app.screen === 'menu' || !app.world) {
     root.innerHTML = menuHTML(!!loadAuto(), app.selectedScenario);
     return;
   }
-  if (app.screen === 'end' && app.game) {
-    root.innerHTML = endHTML(app.game);
+  const g = player()!;
+  if (app.screen === 'end') {
+    root.innerHTML = endHTML(g);
     return;
   }
-  if (!app.game) {
-    root.innerHTML = menuHTML(!!loadAuto(), app.selectedScenario);
-    return;
-  }
-  const g = app.game;
   root.innerHTML = `<div class="play">
       ${headerHTML(g)}
       <div class="cols">
@@ -191,7 +188,7 @@ root.addEventListener('click', (e) => {
   if (!t) return;
   const action = t.dataset.action;
   // on the play screen, while an event modal is open, only resolving it (or menu) is allowed
-  if (app.screen === 'play' && app.game?.pendingEventId && action !== 'resolve' && action !== 'menu') return;
+  if (app.screen === 'play' && player()?.pendingEventId && action !== 'resolve' && action !== 'menu') return;
   const slot = Number(t.dataset.slot);
   switch (action) {
     case 'pick': startGame(t.dataset.id!); break;
@@ -201,10 +198,16 @@ root.addEventListener('click', (e) => {
     case 'resolve': doResolve(Number(t.dataset.opt)); break;
     case 'policy': togglePolicy(t.dataset.id!); break;
     case 'menu': app.screen = 'menu'; render(); break;
-    case 'save': if (app.game) { saveSlot(slot, app.game); render(); } break;
+    case 'save': if (app.world) { saveSlot(slot, app.world); render(); } break;
     case 'load': {
-      const g = loadSlot(slot);
-      if (g) { app.game = g; app.screen = g.status === 'playing' ? 'play' : 'end'; syncPendingFromGame(g); render(); }
+      const w = loadSlot(slot);
+      if (w) {
+        app.world = w;
+        const p = w.countries[w.playerId];
+        app.screen = p.status === 'playing' ? 'play' : 'end';
+        syncPendingFromGame(p);
+        render();
+      }
       break;
     }
     case 'clearslot': clearSlot(slot); render(); break;

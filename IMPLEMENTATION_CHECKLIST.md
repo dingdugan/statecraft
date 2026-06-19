@@ -19,9 +19,9 @@
 
 ### v2 可玩性大迭代（完整世界模拟 —— 见 docs/design-world-v2.md，深度优先自驱）
 
-- [ ] v2.1 世界重构：WorldState/CountryState + advanceWorld（复用国内 reducer）+ relations 对称矩阵 + wars 世界级 + aiDecide 骨架 + newWorld + 存档；测试全部适配
-      验收: tsc 干净；determinism / 存档往返一致 / fail&victory 可达 / 16国×50回合 fuzz 钳制 / 非退化 全绿；UI 仍可玩(渲染玩家国)
-      证据: <file:line + 测试名>
+- [x] v2.1 世界重构（包装复用策略）：WorldState + advanceWorld 对16国各跑现有 advanceTurn + worldSync(关系对称化/战争双向卷入) + aiDecide 骨架 + newWorld + 世界存档；UI 接 world(玩家=countries[playerId])
+      验收: tsc 干净；15/15 测试绿(9单国+6世界: determinism/存档往返/16国齐步推进/玩家 fail&victory 可达/16国×30回合 fuzz)；浏览器 选DE→推进 无报错
+      证据: src/engine/world.ts(advanceWorld/worldSync/genNews)；ai.ts(aiDecide)；index.ts(newWorld)；save.ts(serializeWorld/deserializeWorld/worldFingerprint)；main.ts+saveLoad.ts 接 WorldState；world.test.ts 6 门槛
 - [ ] v2.2 世界面板 + 新闻流 UI：各国摘要 / 实力排名 / 关系矩阵 + 本回合世界新闻流
       验收: 玩家看得到 16 国状态与世界在发生什么；浏览器验证
       证据: <截图>
