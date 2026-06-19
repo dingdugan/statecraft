@@ -13,10 +13,11 @@ export function applyDecisions(s: GameState, ctx: StepContext): GameState {
   if (d.enactPolicyIds) {
     for (const id of d.enactPolicyIds) {
       const p = POLICIES.find((x) => x.id === id);
-      if (p && p.available(s)) {
-        p.apply(s, ctx);
-        ctx.log.push({ kind: 'info', msg: `政策：${p.nameZh}` });
-      }
+      if (!p || !p.available(s)) continue;
+      if (p.oneShot && s.usedPolicyIds.includes(id)) continue; // already fired — no re-ratchet
+      p.apply(s, ctx);
+      if (p.oneShot) s.usedPolicyIds.push(id);
+      ctx.log.push({ kind: 'info', msg: `政策：${p.nameZh}` });
     }
   }
   return s;

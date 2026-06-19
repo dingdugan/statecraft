@@ -50,7 +50,9 @@ function syncPendingFromGame(g: GameState): void {
 
 // ─── transitions ───────────────────────────────────────────────────────────────
 function startGame(id: string): void {
-  const seed = (Date.now() & 0x7fffffff) ^ (id.charCodeAt(0) << 12) ^ (id.charCodeAt(1) << 4);
+  let seed = Date.now() & 0x7fffffff;
+  for (let i = 0; i < id.length; i++) seed = (seed * 31 + id.charCodeAt(i)) | 0;
+  seed &= 0x7fffffff;
   const g = newGame(id, seed);
   app.game = g;
   app.screen = 'play';
@@ -86,6 +88,7 @@ function doAdvance(): void {
 
 function doResolve(opt: number): void {
   if (!app.game?.pendingEventId) return;
+  if (!Number.isInteger(opt) || opt < 0) return;
   const next = resolveEventChoice(app.game, app.game.pendingEventId, opt);
   app.game = next;
   autoSave(next);
@@ -142,7 +145,7 @@ function render(): void {
       ${headerHTML(g)}
       <div class="cols">
         <div class="left">${dashboardHTML(g)}${reportHTML(g)}</div>
-        <div class="right">${decisionsHTML(g, app.pendingAlloc, app.pendingPolicies)}${saveBarHTML()}</div>
+        <div class="right">${decisionsHTML(g, app.pendingTax, app.pendingSpend, app.pendingAlloc, app.pendingPolicies)}${saveBarHTML()}</div>
       </div>
     </div>
     ${eventModalHTML(g)}`;
@@ -184,8 +187,11 @@ function attachPlayListeners(): void {
 root.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
   if (!t) return;
+  const action = t.dataset.action;
+  // while an event modal is open, only resolving it (or bailing to menu) is allowed
+  if (app.game?.pendingEventId && action !== 'resolve' && action !== 'menu') return;
   const slot = Number(t.dataset.slot);
-  switch (t.dataset.action) {
+  switch (action) {
     case 'pick': startGame(t.dataset.id!); break;
     case 'continue': continueGame(); break;
     case 'advance': doAdvance(); break;

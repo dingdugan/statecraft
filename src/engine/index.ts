@@ -50,6 +50,7 @@ export function newGame(countryId: string, seed: number): GameState {
     score: 0,
 
     usedEventIds: [],
+    usedPolicyIds: [],
     log: [],
   };
   computeScore(s);

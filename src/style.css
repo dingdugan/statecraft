@@ -143,6 +143,7 @@ input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
 .policy small { font-size: 11px; margin-top: 3px; font-weight: 400; }
 .policy:hover:not([disabled]) { border-color: var(--accent); }
 .policy.on { border-color: var(--gold); background: #2a2412; }
+.policy.used { opacity: .5; border-style: dashed; }
 .policy[disabled] { opacity: .4; cursor: not-allowed; }
 .advance { width: 100%; margin-top: 4px; font-size: 16px; }
 

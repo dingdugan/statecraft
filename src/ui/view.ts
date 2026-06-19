@@ -109,7 +109,13 @@ function slider(id: string, min: number, max: number, step: number, val: number)
   return `<input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" />`;
 }
 
-export function decisionsHTML(s: GameState, pendingAlloc: Allocation, pendingPolicies: string[]): string {
+export function decisionsHTML(
+  s: GameState,
+  pendingTax: number,
+  pendingSpend: number,
+  pendingAlloc: Allocation,
+  pendingPolicies: string[],
+): string {
   const allocSliders = SPEND_CATEGORIES.map((c: SpendCategory) => {
     const raw = Math.round((pendingAlloc[c] ?? 0) * 1000);
     return `<div class="alloc-row" data-cat="${c}">
@@ -120,23 +126,24 @@ export function decisionsHTML(s: GameState, pendingAlloc: Allocation, pendingPol
   }).join('');
 
   const policyBtns = POLICIES.map((p) => {
-    const avail = p.available(s);
+    const used = s.usedPolicyIds.includes(p.id);
+    const avail = p.available(s) && !used;
     const on = pendingPolicies.includes(p.id);
-    return `<button class="policy ${on ? 'on' : ''}" data-action="policy" data-id="${p.id}" ${avail ? '' : 'disabled'} title="${esc(p.descZh)}">
-      ${on ? '✓ ' : ''}${esc(p.nameZh)}<small>${esc(p.descZh)}</small>
+    return `<button class="policy ${on ? 'on' : ''} ${used ? 'used' : ''}" data-action="policy" data-id="${p.id}" ${avail ? '' : 'disabled'} title="${esc(p.descZh)}">
+      ${used ? '✓已实施 ' : on ? '✓ ' : ''}${esc(p.nameZh)}<small>${esc(p.descZh)}</small>
     </button>`;
   }).join('');
 
   return `<div class="decisions">
     <h3>本年决策</h3>
     <div class="lever">
-      <label>税收强度 <span id="taxval">${fmtPct(s.taxRate, 0)}</span></label>
-      ${slider('tax', 10, 60, 1, Math.round(s.taxRate * 100))}
+      <label>税收强度 <span id="taxval">${fmtPct(pendingTax, 0)}</span></label>
+      ${slider('tax', 10, 60, 1, Math.round(pendingTax * 100))}
       <small>越高，财政收入越多，但过高（>52%）会拖累增长与征收效率。</small>
     </div>
     <div class="lever">
-      <label>支出规模（占GDP） <span id="spendval">${fmtPct(s.spendingPctGdp, 0)}</span></label>
-      ${slider('spend', 10, 70, 1, Math.round(s.spendingPctGdp * 100))}
+      <label>支出规模（占GDP） <span id="spendval">${fmtPct(pendingSpend, 0)}</span></label>
+      ${slider('spend', 10, 70, 1, Math.round(pendingSpend * 100))}
       <small>支出 − 收入 = 赤字；赤字推高债务与利息。</small>
     </div>
     <div class="alloc">

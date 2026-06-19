@@ -69,9 +69,10 @@ export interface GameState {
   prosperity: number; // 0..100 (derived each turn)
   score: number; // 0..100 composite
 
-  // events
+  // events / policies
   pendingEventId?: string;
   usedEventIds: string[];
+  usedPolicyIds: string[];
 
   // transient (deterministic) — the most recent turn's explanation log
   log: LogEntry[];

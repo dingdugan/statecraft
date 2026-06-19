@@ -58,14 +58,15 @@ describe('(b) save → reload identity', () => {
   it('reloaded game continues identically', () => {
     let live = newGame('CN', 77);
     for (let i = 0; i < 10; i++) live = play(live);
-    const reloaded = deserialize(serialize(live));
+    const reloaded = deserialize(serialize(live))!;
+    expect(reloaded).not.toBeNull();
     expect(fingerprint(reloaded)).toBe(fingerprint(live));
 
     for (let i = 0; i < 10; i++) {
       live = play(live);
       // mirror the same auto-resolve on the reloaded copy
     }
-    let reload2 = deserialize(serialize(reloaded));
+    let reload2 = deserialize(serialize(reloaded))!;
     for (let i = 0; i < 10; i++) reload2 = play(reload2);
     expect(fingerprint(reload2)).toBe(fingerprint(live));
   });

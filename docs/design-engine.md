@@ -380,6 +380,26 @@ script; (d) unrest path reaches `revolution`; (e) allocation always normalizes t
 
 ---
 
+## Post-build tuning & review deltas (2026-06-19)
+
+Verification + adversarial code review changed these from the v0 contract above (all
+within the "every formula is v0 and tunable" license; recorded so the doc isn't stale):
+
+- **Country starts near primary balance** (was structural-deficit → spiral on default play).
+- **Interest curve** softened to `0.015 + (20−r)/20 × 0.10` (was `0.02 + …×0.16`) so a
+  healthy state sits at r < nominal-g.
+- **Rating target** weighs debt at ×5 (was ×8) so disciplined high-debt states stay
+  investable; deficit blowups still crater it (×40 term).
+- **New trait `cheap_debt`** (×0.25 on interest; Japan) models deep domestic/JGB markets.
+- **Tax penalty threshold** 0.45 → 0.52 (laffer + growth drag); politics services weight
+  ×20 and taxPain ×30; inflation re-anchors toward 2%; unrest decay capped at 4 so an
+  authoritarian stability floor can't fully suppress revolt.
+- **`usedPolicyIds`** added to `GameState`: `oneShot` policies fire once (closes a
+  per-turn lever-ratchet exploit). Score sub-bands now clamped to their documented ranges.
+- **`deserialize` is defensive**: returns null on corrupt/invalid blobs and backfills
+  array fields added in later versions (forward-compatible old saves).
+
 ## Changelog
 - 2026-06-19: Initial engine contract written in the LFG plan phase to resolve the
   adversarial spec review's "missing numeric model" finding.
+- 2026-06-19: Recorded post-build tuning + code-review fixes (see section above).
