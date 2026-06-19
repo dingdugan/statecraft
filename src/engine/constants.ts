@@ -63,6 +63,13 @@ export const C = {
   WAR_EXHAUST: 12, // exhaustion gained per war-year
   WAR_RECOVER: 10, // exhaustion recovered per peace-year
 
+  // resources & environment
+  COMMODITY_VOL: 0.15, // commodity-price walk volatility
+  DEPLETE_RATE: 0.4, // depletion per year for resource economies
+  CLIMATE_ACCUM: 0.05, // climate stress accrued per emissions point above 40
+  K_RESOURCE: 0.3, // growth per unit resource income
+  K_CLIMATE: 0.02, // growth drag at full climate stress
+
   // social
   HEALTH_STEP: 4, // max health-index move per year
   INEQ_UNEMP: 0.03, // inequality pressure per unit unemployment gap

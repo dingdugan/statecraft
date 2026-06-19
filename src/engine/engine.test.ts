@@ -40,6 +40,7 @@ const NUMERIC_FIELDS: (keyof GameState)[] = [
   'prosperity', 'score', 'inequality', 'healthIndex', 'qualityOfLife', 'legitimacy',
   'techLevel', 'militaryStrength', 'militaryReadiness', 'coupRisk',
   'globalStanding', 'tradeBalance', 'sanctionPressure', 'warScore', 'warExhaustion',
+  'commodityPrice', 'resourceDepletion', 'resourceIncome', 'emissions', 'climateStress',
 ];
 
 describe('(a) determinism', () => {
@@ -140,6 +141,14 @@ describe('(e)+(f) clamps + normalization hold under 50-turn fuzz', () => {
         expect(s.warScore).toBeLessThanOrEqual(100);
         expect(s.warExhaustion).toBeGreaterThanOrEqual(0);
         expect(s.warExhaustion).toBeLessThanOrEqual(100);
+        expect(s.commodityPrice).toBeGreaterThanOrEqual(0.4);
+        expect(s.commodityPrice).toBeLessThanOrEqual(2.2);
+        expect(s.resourceIncome).toBeGreaterThanOrEqual(0);
+        expect(s.resourceIncome).toBeLessThanOrEqual(0.3);
+        for (const k of ['resourceDepletion', 'emissions', 'climateStress'] as const) {
+          expect(s[k]).toBeGreaterThanOrEqual(0);
+          expect(s[k]).toBeLessThanOrEqual(100);
+        }
         for (const k of ['healthIndex', 'qualityOfLife', 'legitimacy'] as const) {
           expect(s[k]).toBeGreaterThanOrEqual(0);
           expect(s[k]).toBeLessThanOrEqual(100);

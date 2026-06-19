@@ -30,6 +30,11 @@ export function deserialize(str: string): GameState | null {
       if (o.warWith === undefined) o.warWith = null;
       if (typeof o.warScore !== 'number') o.warScore = 0;
       if (typeof o.warExhaustion !== 'number') o.warExhaustion = 0;
+      if (typeof o.commodityPrice !== 'number') o.commodityPrice = 1.0;
+      if (typeof o.resourceDepletion !== 'number') o.resourceDepletion = 0;
+      if (typeof o.resourceIncome !== 'number') o.resourceIncome = 0;
+      if (typeof o.emissions !== 'number') o.emissions = 40;
+      if (typeof o.climateStress !== 'number') o.climateStress = 0;
       return o as GameState;
     }
     return null;

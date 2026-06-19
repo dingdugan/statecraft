@@ -119,6 +119,14 @@ export function dashboardHTML(s: GameState): string {
     stat('战争疲劳', s.warExhaustion.toFixed(0), tone3(s.warExhaustion, 30, 60, true)),
   ].join('');
 
+  const resources = [
+    stat('资源收入', fmtPct(s.resourceIncome, 1), tone3(s.resourceIncome, 0.02, 0)),
+    stat('大宗价格', s.commodityPrice.toFixed(2)),
+    stat('资源枯竭', s.resourceDepletion.toFixed(0), tone3(s.resourceDepletion, 50, 75, true)),
+    stat('碳排放', s.emissions.toFixed(0), tone3(s.emissions, 55, 75, true)),
+    stat('气候压力', s.climateStress.toFixed(0), tone3(s.climateStress, 40, 65, true)),
+  ].join('');
+
   const brief = briefings(s)
     .map((b) => `<li class="brief ${b.tone}"><span class="who">${b.who}</span>${esc(b.msg)}</li>`)
     .join('');
@@ -133,6 +141,7 @@ export function dashboardHTML(s: GameState): string {
       <section class="group"><h3>军事</h3>${military}</section>
       <section class="group"><h3>外交</h3>${diplomacy}</section>
       <section class="group"><h3>战争</h3>${war}</section>
+      <section class="group"><h3>资源环境</h3>${resources}</section>
     </div>
     <section class="briefings"><h3>内阁简报</h3><ul>${brief}</ul></section>
   </div>`;

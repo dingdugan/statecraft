@@ -78,6 +78,13 @@ export interface GameState {
   warScore: number; // -100..100 (positive = winning)
   warExhaustion: number; // 0..100
 
+  // resources & environment
+  commodityPrice: number; // global commodity/oil price index ~0.4..2.2 (1.0 baseline)
+  resourceDepletion: number; // 0..100 (rises as resource economies extract)
+  resourceIncome: number; // fraction of GDP from commodity exports (derived)
+  emissions: number; // 0..100 annual emissions intensity (derived)
+  climateStress: number; // 0..100 cumulative climate damage (drags growth + QoL)
+
   // fiscal — player levers: taxRate, spendingPctGdp, allocation
   taxRate: number; // target revenue as fraction of GDP [0.10, 0.60]
   spendingPctGdp: number; // primary spending envelope, fraction of GDP [0.10, 0.70]
@@ -132,6 +139,8 @@ export interface CountryStart {
   debtPctGdp: number;
   creditRating: number;
   reserves: number;
+  resourceDepletion: number;
+  climateStress: number;
 }
 
 export interface CountryDef {

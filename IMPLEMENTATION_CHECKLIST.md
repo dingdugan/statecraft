@@ -20,9 +20,9 @@
 - [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
       验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
       证据: <file:line + 来源标注>
-- [ ] 加 Resources & environment / Scenarios（按 roadmap 逐个）
-      验收: 每个系统 reducer+data+UI+测试+commit
-      证据: <逐条补>
+- [ ] 加 Scenarios & victory（roadmap 最后一项）
+      验收: reducer/逻辑 + data + UI + 测试 + commit
+      证据: <补>
 
 ## Done
 
@@ -47,6 +47,10 @@
 - [x] War 系统：militaryStrength+relations 触发战争，按实力对比推进，胜/败结算 + 'defeated' fail-state
       验收: stepWar 在 military→score 间；关系≤-75 概率开战；战局按 (军力×战备) 对比+噪声推进；战时拖累 GDP/储备/疲劳→动荡；warScore≥80 胜(赔款+威望)/≤-80 败(损失，稳定<25 则亡国)；war_council 事件给玩家战时杠杆
       证据: src/engine/reducers/war.ts；advanceTurn.ts(stepWar)；data/events.ts(war_council)；UI「战争」组+总参谋部简报+defeated 结束屏；engine.test.ts gate (h) 强制战争收敛 → 7/7 绿；浏览器沙特加载无报错
+
+- [x] Resources & environment 系统：大宗价格周期 / 资源收入 / 枯竭 / 碳排放 / 气候压力
+      验收: stepResources 在 diplomacy→economy 间；oil/resource 国按大宗价格得资源收入(喂储备+增长)并随开采枯竭；高工业+低绿色投入→高排放，排放累积成气候压力，拖累增长(economy)与生活质量(social)
+      证据: src/engine/reducers/resources.ts(stepResources/computeResources)；economy.ts(K_RESOURCE/K_CLIMATE)；social.ts(qol 气候扣减)；6 国 resourceDepletion/climateStress 起始；UI「资源环境」组+资源环境部简报；engine.test.ts 5 字段 bounds → 7/7 绿
 
 ### MVP — 全部完成并经浏览器冷启动 walkthrough 验证（2026-06-19）
 

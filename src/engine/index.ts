@@ -4,6 +4,7 @@ import { makeRngState } from './rng';
 import { computeScore } from './reducers/score';
 import { computeQol } from './reducers/social';
 import { initRelations } from './reducers/diplomacy';
+import { computeResources } from './reducers/resources';
 import { C } from './constants';
 import type { GameState } from './types';
 
@@ -58,6 +59,12 @@ export function newGame(countryId: string, seed: number): GameState {
     warScore: 0,
     warExhaustion: 0,
 
+    commodityPrice: 1.0,
+    resourceDepletion: st.resourceDepletion,
+    resourceIncome: 0,
+    emissions: 0,
+    climateStress: st.climateStress,
+
     taxRate: st.taxRate,
     spendingPctGdp: st.spendingPctGdp,
     allocation: { ...st.allocation },
@@ -74,6 +81,7 @@ export function newGame(countryId: string, seed: number): GameState {
     usedPolicyIds: [],
     log: [],
   };
+  computeResources(s);
   computeQol(s);
   initRelations(s);
   computeScore(s);

@@ -130,6 +130,15 @@ export function briefings(s: GameState): Briefing[] {
       tone: s.warScore < -20 ? 'bad' : 'warn',
     });
 
+  // resources & environment
+  const RES = '资源环境部';
+  if (s.climateStress >= 55)
+    out.push({ who: RES, msg: `气候压力高（${s.climateStress.toFixed(0)}），正侵蚀增长与民生。`, tone: 'bad' });
+  if (s.resourceDepletion >= 70)
+    out.push({ who: RES, msg: `资源接近枯竭（${s.resourceDepletion.toFixed(0)}），亟需转型。`, tone: 'warn' });
+  else if (s.resourceIncome > 0.06 && s.commodityPrice > 1.3)
+    out.push({ who: RES, msg: `大宗价格走高（${s.commodityPrice.toFixed(2)}），资源收入丰厚。`, tone: 'good' });
+
   if (out.length === 0)
     out.push({ who: '内阁', msg: '各项指标平稳，无紧急事项。', tone: 'good' });
 

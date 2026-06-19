@@ -13,7 +13,8 @@
 //   GAME PROXY / CALIBRATED (not a real poll or statistic — a starting position):
 //     approval, stability, educationLevel (0..100 index), healthIndex (0..100),
 //     laborParticipation, creditRating (0..20 game scale), allocation (budget tilt),
-//     productivity / techLevel (0.5..3 index), militaryStrength / militaryReadiness (0..100)
+//     productivity / techLevel (0.5..3 index), militaryStrength / militaryReadiness (0..100),
+//     resourceDepletion / climateStress (0..100 game indices)
 //
 // TODO(loop): verify/refine specific figures against named sources; expand 6 → ~16.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -55,6 +56,8 @@ export const COUNTRIES: CountryDef[] = [
       debtPctGdp: 0.63,
       creditRating: 20,
       reserves: 300,
+      resourceDepletion: 5,
+      climateStress: 25,
     },
   },
   {
@@ -91,6 +94,8 @@ export const COUNTRIES: CountryDef[] = [
       debtPctGdp: 2.5,
       creditRating: 16,
       reserves: 1200,
+      resourceDepletion: 5,
+      climateStress: 22,
     },
   },
   {
@@ -127,6 +132,8 @@ export const COUNTRIES: CountryDef[] = [
       debtPctGdp: 0.38,
       creditRating: 4,
       reserves: 33,
+      resourceDepletion: 25,
+      climateStress: 8,
     },
   },
   {
@@ -163,6 +170,8 @@ export const COUNTRIES: CountryDef[] = [
       debtPctGdp: 0.3, // modeled NET (gross is high but offset by sovereign assets)
       creditRating: 20,
       reserves: 500,
+      resourceDepletion: 5,
+      climateStress: 20,
     },
   },
   {
@@ -199,6 +208,8 @@ export const COUNTRIES: CountryDef[] = [
       debtPctGdp: 0.25,
       creditRating: 15,
       reserves: 430,
+      resourceDepletion: 30,
+      climateStress: 30,
     },
   },
   {
@@ -235,6 +246,8 @@ export const COUNTRIES: CountryDef[] = [
       debtPctGdp: 0.77,
       creditRating: 16,
       reserves: 3200,
+      resourceDepletion: 10,
+      climateStress: 35,
     },
   },
 ];

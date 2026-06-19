@@ -15,7 +15,8 @@ export function stepEconomy(s: GameState, ctx: StepContext): GameState {
 
   const potential =
     s.trendGrowth + infraEff + techBonus + eduEff +
-    C.K_TRADE * s.tradeBalance - C.K_SANCTION * (s.sanctionPressure / 100) -
+    C.K_TRADE * s.tradeBalance - C.K_SANCTION * (s.sanctionPressure / 100) +
+    C.K_RESOURCE * s.resourceIncome - C.K_CLIMATE * (s.climateStress / 100) -
     agingDrag - taxDrag - instDrag;
   const realGrowth = clamp(potential + ctx.rng.normal(0, C.GROWTH_SD), -0.15, 0.15);
   s.gdpGrowthReal = realGrowth;

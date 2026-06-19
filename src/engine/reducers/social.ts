@@ -11,7 +11,8 @@ export function computeQol(s: GameState): void {
     0.45 * s.healthIndex +
       0.3 * s.educationLevel +
       0.25 * (100 - ineqPenalty) -
-      100 * Math.max(0, s.unemployment - 0.08),
+      100 * Math.max(0, s.unemployment - 0.08) -
+      0.12 * s.climateStress,
     0,
     100,
   );
