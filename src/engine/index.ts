@@ -107,7 +107,7 @@ export function newWorld(playerId: string, seed: number, scenarioId = 'standard'
     const cseed = id === playerId ? seed : ((seed + (i + 1) * 0x9e3779b1) | 0) & 0x7fffffff;
     countries[id] = newGame(id, cseed, id === playerId ? scenarioId : 'standard');
   });
-  return { countries, playerId, turn: 0, news: [] };
+  return { countries, playerId, turn: 0, news: [], rng: makeRngState((seed ^ 0x6d2b79f5) & 0x7fffffff) };
 }
 
 export { advanceTurn } from './advanceTurn';

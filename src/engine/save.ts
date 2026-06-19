@@ -1,7 +1,8 @@
 // Save/load is trivial because GameState is plain JSON-serializable data (RNG included).
-import type { GameState } from './types';
+import type { GameState, RngState } from './types';
 import type { WorldState } from './world';
 import { getCountry } from '../data/countries';
+import { makeRngState } from './rng';
 
 export function serialize(s: GameState): string {
   return JSON.stringify(s);
@@ -68,7 +69,7 @@ export function serializeWorld(w: WorldState): string {
 export function deserializeWorld(str: string): WorldState | null {
   try {
     const o = JSON.parse(str) as
-      | { countries?: Record<string, unknown>; playerId?: unknown; turn?: unknown; news?: unknown }
+      | { countries?: Record<string, unknown>; playerId?: unknown; turn?: unknown; news?: unknown; rng?: unknown }
       | null;
     if (!o || typeof o !== 'object' || typeof o.playerId !== 'string' || !o.countries || typeof o.countries !== 'object') {
       return null;
@@ -85,6 +86,10 @@ export function deserializeWorld(str: string): WorldState | null {
       playerId: o.playerId,
       turn: typeof o.turn === 'number' ? o.turn : 0,
       news: Array.isArray(o.news) ? (o.news as WorldState['news']) : [],
+      rng:
+        o.rng && typeof o.rng === 'object' && typeof (o.rng as RngState).cursor === 'number'
+          ? (o.rng as RngState)
+          : makeRngState(0),
     };
   } catch {
     return null;
@@ -94,5 +99,5 @@ export function deserializeWorld(str: string): WorldState | null {
 /** Deterministic fingerprint of the whole world (per-country fingerprints + meta). */
 export function worldFingerprint(w: WorldState): string {
   const ids = Object.keys(w.countries).sort();
-  return ids.map((id) => `${id}:${fingerprint(w.countries[id])}`).join('||') + `#${w.playerId}#${w.turn}`;
+  return ids.map((id) => `${id}:${fingerprint(w.countries[id])}`).join('||') + `#${w.playerId}#${w.turn}#${w.rng?.seed ?? 0}:${w.rng?.cursor ?? 0}`;
 }

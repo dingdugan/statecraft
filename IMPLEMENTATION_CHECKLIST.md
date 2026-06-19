@@ -25,9 +25,9 @@
 - [x] v2.2 世界面板 + 新闻流 UI：「本国/世界」切换；列国表(按GDP排名: 国家/政体/GDP/对你关系/态势/评分, 玩家行高亮) + 世界新闻流(world.news)
       验收: 浏览器验证——德国局切「世界」显示全 16 国排名(美国#1)、对你关系、态势；tsc 干净、15/15 测试绿
       证据: src/ui/view.ts(worldViewHTML/REL_TIER/STATUS_ZH)；main.ts(app.view+viewtabs)；style.css(viewtabs/news/nations)；eval 验证 nationRows=16 + 截图列国表
-- [ ] v2.3 AI 完善 + 国家间真交互：他国理性决策；彼此(不只对玩家)结盟/交恶/开战
-      验收: sim 显示他国之间也有外交与战争动态；有测试
-      证据: <测试名 + sim>
+- [x] v2.3 AI 完善 + 国家间真交互：aiDecide 理性财政启发式(衰退刺激/通胀赤字紧缩/可持续收敛)；WorldState.rng + stepWorldRelations(每年外交漂移 + 偶发爆发点危机压破 −75 战争线) → NPC 彼此开战(worldSync 双向卷入)；genNews 结盟/交恶
+      验收: 平衡 sim(12世界×16国×40年) 真崩溃=0、宣战=28(avg 2.3/世界)；浏览器跑16年→2041 世界面板显示 🇰🇷⚔️🇧🇷、关系游走；tsc 干净 17/17 测试绿
+      证据: src/engine/ai.ts(aiDecide)；world.ts(stepWorldRelations/genNews)；index.ts(newWorld rng)；save.ts(deserializeWorld/worldFingerprint rng)；world.test.ts 测试 (g) dynamic-but-not-degenerate + (h) wars ignite
 - [ ] v2.4 事件库扩充：~8 → 几十，分类 + 多回合事件链 + 世界事件(影响多国)
       验收: 事件多样、可触发链、世界事件波及多国
       证据: <file:line + 测试>

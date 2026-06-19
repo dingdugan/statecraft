@@ -101,3 +101,35 @@ describe('world (f) 16-country fuzz holds', () => {
     }
   });
 });
+
+describe('world (g) dynamic but not degenerate', () => {
+  it('relations move and the world does not mass-collapse over 40 turns', () => {
+    let w = newWorld('DE', 8888);
+    const before = { ...w.countries.DE.relations };
+    for (let i = 0; i < 40 && w.countries.DE.status === 'playing'; i++) w = playW(w);
+    // (1) world diplomacy is live: at least one relation has drifted
+    const moved = COUNTRY_IDS.some(
+      (id) => id !== w.playerId && Math.abs((w.countries.DE.relations[id] ?? 0) - ((before[id] as number) ?? 0)) > 1,
+    );
+    expect(moved).toBe(true);
+    // (2) no mass hard-collapse: catastrophic ends stay rare (balance sim: 0 across 12 worlds).
+    // voted_out / victory are normal NPC outcomes, not collapse, so we count only hard failures.
+    const HARD = ['bankrupt', 'revolution', 'coup', 'defeated'];
+    const collapsed = COUNTRY_IDS.filter((id) => HARD.includes(w.countries[id].status)).length;
+    expect(collapsed).toBeLessThanOrEqual(4);
+  });
+});
+
+describe('world (h) international wars can ignite', () => {
+  it('across several worlds, NPC relations sour into at least one declared war', () => {
+    let wars = 0;
+    for (const seed of [1007, 2007, 3007, 4007, 5007, 6007]) {
+      let w = newWorld('DE', seed);
+      for (let i = 0; i < 40 && w.countries.DE.status === 'playing'; i++) {
+        w = playW(w);
+        wars += w.news.filter((n) => n.kind === 'war' && n.msg.includes('开战')).length;
+      }
+    }
+    expect(wars).toBeGreaterThan(0);
+  });
+});
