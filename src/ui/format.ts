@@ -1,5 +1,6 @@
 import type { GameState, GovType, SpendCategory } from '../engine/types';
 import { clamp, round } from '../engine/util';
+import { getCountry } from '../data/countries';
 
 export function fmtMoney(bn: number): string {
   const a = Math.abs(bn);
@@ -121,6 +122,13 @@ export function briefings(s: GameState): Briefing[] {
     out.push({ who: DIP, msg: `多国制裁挤压经济（压力 ${s.sanctionPressure.toFixed(0)}）。`, tone: 'bad' });
   else if (s.globalStanding < 35)
     out.push({ who: DIP, msg: `国际声望低迷（${s.globalStanding.toFixed(0)}），外交空间收窄。`, tone: 'warn' });
+
+  if (s.warWith)
+    out.push({
+      who: '总参谋部',
+      msg: `与 ${getCountry(s.warWith).nameZh} 交战中（战局 ${s.warScore.toFixed(0)}，疲劳 ${s.warExhaustion.toFixed(0)}）。`,
+      tone: s.warScore < -20 ? 'bad' : 'warn',
+    });
 
   if (out.length === 0)
     out.push({ who: '内阁', msg: '各项指标平稳，无紧急事项。', tone: 'good' });

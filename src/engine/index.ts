@@ -54,6 +54,10 @@ export function newGame(countryId: string, seed: number): GameState {
     tradeBalance: 0,
     sanctionPressure: 0,
 
+    warWith: null,
+    warScore: 0,
+    warExhaustion: 0,
+
     taxRate: st.taxRate,
     spendingPctGdp: st.spendingPctGdp,
     allocation: { ...st.allocation },

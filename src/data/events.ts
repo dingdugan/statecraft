@@ -230,6 +230,34 @@ export const EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'war_council',
+    title: 'War Council',
+    titleZh: '战局抉择',
+    desc: 'The front is active. Your generals await orders.',
+    descZh: '前线胶着，将领们等待你的决断。',
+    weight: 5,
+    condition: (s) => s.warWith !== null,
+    options: [
+      {
+        label: 'Press the offensive',
+        labelZh: '全力进攻',
+        apply: (s) => {
+          s.warScore = clamp(s.warScore + 15, -100, 100);
+          s.reserves -= 0.02 * s.gdp;
+          s.warExhaustion = clamp(s.warExhaustion + 8, 0, 100);
+        },
+      },
+      {
+        label: 'Hold and consolidate',
+        labelZh: '稳守消耗',
+        apply: (s) => {
+          s.warExhaustion = clamp(s.warExhaustion - 8, 0, 100);
+          s.approval = clamp(s.approval + 2, 0, 100);
+        },
+      },
+    ],
+  },
 ];
 
 export function getEvent(id: string): EventDef | undefined {

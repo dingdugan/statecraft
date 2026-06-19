@@ -39,7 +39,7 @@ const NUMERIC_FIELDS: (keyof GameState)[] = [
   'spendingPctGdp', 'debtPctGdp', 'creditRating', 'deficitPctGdp', 'reserves',
   'prosperity', 'score', 'inequality', 'healthIndex', 'qualityOfLife', 'legitimacy',
   'techLevel', 'militaryStrength', 'militaryReadiness', 'coupRisk',
-  'globalStanding', 'tradeBalance', 'sanctionPressure',
+  'globalStanding', 'tradeBalance', 'sanctionPressure', 'warScore', 'warExhaustion',
 ];
 
 describe('(a) determinism', () => {
@@ -136,6 +136,10 @@ describe('(e)+(f) clamps + normalization hold under 50-turn fuzz', () => {
           expect(r).toBeGreaterThanOrEqual(-100);
           expect(r).toBeLessThanOrEqual(100);
         }
+        expect(s.warScore).toBeGreaterThanOrEqual(-100);
+        expect(s.warScore).toBeLessThanOrEqual(100);
+        expect(s.warExhaustion).toBeGreaterThanOrEqual(0);
+        expect(s.warExhaustion).toBeLessThanOrEqual(100);
         for (const k of ['healthIndex', 'qualityOfLife', 'legitimacy'] as const) {
           expect(s[k]).toBeGreaterThanOrEqual(0);
           expect(s[k]).toBeLessThanOrEqual(100);
@@ -153,5 +157,16 @@ describe('(g) prosperous play is not degenerate', () => {
     for (let i = 0; i < 25 && s.status === 'playing'; i++) s = play(s); // keep defaults
     expect(s.status).toBe('playing');
     expect(s.score).toBeGreaterThan(45);
+  });
+});
+
+describe('(h) war resolves', () => {
+  it('a forced war with overwhelming strength concludes (warWith clears)', () => {
+    let s = newGame('CN', 4);
+    s.warWith = 'NG';
+    s.militaryStrength = 95;
+    s.militaryReadiness = 95;
+    for (let i = 0; i < 15 && s.warWith !== null && s.status === 'playing'; i++) s = play(s);
+    expect(s.warWith).toBeNull();
   });
 });

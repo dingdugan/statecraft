@@ -27,6 +27,9 @@ export function deserialize(str: string): GameState | null {
       if (typeof o.globalStanding !== 'number') o.globalStanding = 50;
       if (typeof o.tradeBalance !== 'number') o.tradeBalance = 0;
       if (typeof o.sanctionPressure !== 'number') o.sanctionPressure = 0;
+      if (o.warWith === undefined) o.warWith = null;
+      if (typeof o.warScore !== 'number') o.warScore = 0;
+      if (typeof o.warExhaustion !== 'number') o.warExhaustion = 0;
       return o as GameState;
     }
     return null;

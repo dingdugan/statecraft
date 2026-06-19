@@ -20,7 +20,7 @@
 - [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
       验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
       证据: <file:line + 来源标注>
-- [ ] 加 War / Resources & environment / Scenarios（按 roadmap 逐个）
+- [ ] 加 Resources & environment / Scenarios（按 roadmap 逐个）
       验收: 每个系统 reducer+data+UI+测试+commit
       证据: <逐条补>
 
@@ -43,6 +43,10 @@
 - [x] Diplomacy & trade 系统：与各国关系(-100..100) / 国际声望 / 贸易差额 / 制裁压力
       验收: stepDiplomacy 在 tech→economy 间；关系按政体对齐基线漂移；贸易喂入增长、制裁拖累；newGame 按对齐播种关系；determinism 往返 relations map
       证据: src/engine/reducers/diplomacy.ts(stepDiplomacy/initRelations/computeDiplomacy)；economy.ts(K_TRADE/K_SANCTION 接入 potential)；data/events.ts(trade_dispute)；UI「外交」组+外交大臣简报；engine.test.ts relations bounds → 6/6 绿；浏览器德国加载无报错
+
+- [x] War 系统：militaryStrength+relations 触发战争，按实力对比推进，胜/败结算 + 'defeated' fail-state
+      验收: stepWar 在 military→score 间；关系≤-75 概率开战；战局按 (军力×战备) 对比+噪声推进；战时拖累 GDP/储备/疲劳→动荡；warScore≥80 胜(赔款+威望)/≤-80 败(损失，稳定<25 则亡国)；war_council 事件给玩家战时杠杆
+      证据: src/engine/reducers/war.ts；advanceTurn.ts(stepWar)；data/events.ts(war_council)；UI「战争」组+总参谋部简报+defeated 结束屏；engine.test.ts gate (h) 强制战争收敛 → 7/7 绿；浏览器沙特加载无报错
 
 ### MVP — 全部完成并经浏览器冷启动 walkthrough 验证（2026-06-19）
 

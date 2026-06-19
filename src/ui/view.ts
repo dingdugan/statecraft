@@ -112,6 +112,13 @@ export function dashboardHTML(s: GameState): string {
     stat('盟友 / 对手', `${allies} / ${rivals}`),
   ].join('');
 
+  const atWar = s.warWith !== null;
+  const war = [
+    stat('战争状态', atWar ? `与 ${getCountry(s.warWith!).nameZh} 交战` : '和平', atWar ? 'bad' : 'good'),
+    ...(atWar ? [stat('战局', s.warScore.toFixed(0), tone3(s.warScore, 0, -40))] : []),
+    stat('战争疲劳', s.warExhaustion.toFixed(0), tone3(s.warExhaustion, 30, 60, true)),
+  ].join('');
+
   const brief = briefings(s)
     .map((b) => `<li class="brief ${b.tone}"><span class="who">${b.who}</span>${esc(b.msg)}</li>`)
     .join('');
@@ -125,6 +132,7 @@ export function dashboardHTML(s: GameState): string {
       <section class="group"><h3>政治</h3>${politics}</section>
       <section class="group"><h3>军事</h3>${military}</section>
       <section class="group"><h3>外交</h3>${diplomacy}</section>
+      <section class="group"><h3>战争</h3>${war}</section>
     </div>
     <section class="briefings"><h3>内阁简报</h3><ul>${brief}</ul></section>
   </div>`;
@@ -216,6 +224,7 @@ export function endHTML(s: GameState): string {
     bankrupt: '💥 国家破产',
     revolution: '🔥 政权倾覆',
     coup: '⚔️ 军事政变',
+    defeated: '🏳️ 战败亡国',
     voted_out: '🗳️ 黯然下台',
     ended: '🏁 任期落幕',
   };

@@ -1,7 +1,7 @@
 // Core type contracts for the simulation engine. See docs/design-engine.md §1.
 
 export type GovType = 'democracy' | 'authoritarian' | 'monarchy' | 'hybrid';
-export type Status = 'playing' | 'bankrupt' | 'revolution' | 'coup' | 'voted_out' | 'ended';
+export type Status = 'playing' | 'bankrupt' | 'revolution' | 'coup' | 'defeated' | 'voted_out' | 'ended';
 export type Sector = 'agriculture' | 'industry' | 'services';
 export type SpendCategory =
   | 'military' | 'education' | 'healthcare' | 'infrastructure' | 'welfare' | 'rnd';
@@ -72,6 +72,11 @@ export interface GameState {
   globalStanding: number; // 0..100 soft power / standing
   tradeBalance: number; // net trade as fraction of GDP
   sanctionPressure: number; // 0..100 (derived from hostile relations)
+
+  // war
+  warWith: string | null; // country id at war with, or null (peace)
+  warScore: number; // -100..100 (positive = winning)
+  warExhaustion: number; // 0..100
 
   // fiscal — player levers: taxRate, spendingPctGdp, allocation
   taxRate: number; // target revenue as fraction of GDP [0.10, 0.60]

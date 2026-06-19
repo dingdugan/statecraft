@@ -54,6 +54,15 @@ export const C = {
   K_TRADE: 0.08, // growth per unit trade balance
   K_SANCTION: 0.04, // growth drag at full sanction pressure
 
+  // war
+  WAR_START_CHANCE: 0.2, // chance/yr a relation <= -75 erupts into war
+  K_WAR: 0.6, // warScore swing per unit power gap
+  WAR_NOISE: 8,
+  WAR_GDP_DRAG: 0.02, // GDP hit per war-year
+  WAR_RESERVE_DRAG: 0.015, // reserves drain per war-year (× GDP)
+  WAR_EXHAUST: 12, // exhaustion gained per war-year
+  WAR_RECOVER: 10, // exhaustion recovered per peace-year
+
   // social
   HEALTH_STEP: 4, // max health-index move per year
   INEQ_UNEMP: 0.03, // inequality pressure per unit unemployment gap
