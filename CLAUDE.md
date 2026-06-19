@@ -66,6 +66,7 @@ updated: YYYY-MM-DD
 
 - [spec-nation-sim.md](docs/spec-nation-sim.md) — **产品愿景源**。游戏概念、范围（MVP vs 后续）、核心循环、系统清单、国家集、深度优先 roadmap。
 - [design-engine.md](docs/design-engine.md) — **构建契约（权威数值模型）**。`GameState` schema、各 reducer 的 v0 公式、`advanceTurn` 解算顺序、种子 RNG、信用评级/利率、破产/革命判定、计分、Policy/Event 类型与样例、模块图与测试门槛。写引擎代码信它。
+- [research-overnight-report.md](docs/research-overnight-report.md) — overnight LFG 构建报告：逐 commit 清单、系统全貌（11 系统）、测试/构建状态、遗留平衡项、后续建议。
 
 ## 项目特定上下文
 
