@@ -135,8 +135,8 @@ industrial / resource / services; huge / tiny):
 > 🇸🇦 Saudi Arabia (oil monarchy, sovereign wealth, undiversified) ·
 > 🇨🇳 China (authoritarian giant, manufacturing, demographic cliff ahead)
 
-**Loop expansion → ~16**: 🇺🇸 USA · 🇮🇳 India · 🇬🇧 UK · 🇫🇷 France · 🇧🇷 Brazil ·
-🇷🇺 Russia · 🇰🇷 South Korea · 🇿🇦 South Africa · 🇮🇩 Indonesia · 🇲🇽 Mexico
+**✅ Now implemented — 16 total** (added post-overnight): 🇺🇸 USA · 🇮🇳 India · 🇬🇧 UK ·
+🇫🇷 France · 🇧🇷 Brazil · 🇷🇺 Russia · 🇰🇷 South Korea · 🇿🇦 South Africa · 🇮🇩 Indonesia · 🇲🇽 Mexico
 
 **Reality-grounding policy (per global CLAUDE.md):** starting figures are *approximate
 real-world magnitudes* at a stated **baseline ≈ 2024**, used for gameplay — real

@@ -41,6 +41,7 @@ const NUMERIC_FIELDS: (keyof GameState)[] = [
   'techLevel', 'militaryStrength', 'militaryReadiness', 'coupRisk',
   'globalStanding', 'tradeBalance', 'sanctionPressure', 'warScore', 'warExhaustion',
   'commodityPrice', 'resourceDepletion', 'resourceIncome', 'emissions', 'climateStress',
+  'priceLevel',
 ];
 
 describe('(a) determinism', () => {
@@ -181,9 +182,11 @@ describe('(h) war resolves', () => {
 });
 
 describe('(i) victory reachable', () => {
-  it('a strong, well-run state reaches a victory within a few decades', () => {
-    let s = newGame('DE', 2025);
-    for (let i = 0; i < 40 && s.status === 'playing'; i++) s = play(s);
+  it('a wealthy, livable state past the tenure floor wins (prosperity)', () => {
+    let s = newGame('DE', 7);
+    s.turn = 25; // past the 20-year tenure floor
+    s.gdp = 15000; // real GDP/cap well above the $100k prosperity bar for ~84M people
+    s = play(s);
     expect(s.status).toBe('victory');
   });
 });

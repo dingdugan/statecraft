@@ -42,6 +42,7 @@ export interface GameState {
   techLevel: number; // tech index 0.5..3, driven by R&D; feeds growth + productivity
   unemployment: number; // fraction [0.01, 0.45]
   inflation: number; // fraction [-0.05, 0.40]
+  priceLevel: number; // cumulative price level (1.0 = baseline year); deflates nominal GDP
 
   // population
   population: number; // millions

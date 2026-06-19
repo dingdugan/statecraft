@@ -32,6 +32,7 @@ export function stepEconomy(s: GameState, ctx: StepContext): GameState {
     0.4,
   );
 
+  s.priceLevel *= 1 + s.inflation; // track cumulative price level for real-GDP deflation
   s.gdp *= (1 + realGrowth) * (1 + s.inflation); // nominal
 
   // Okun-ish unemployment reaction + mean reversion to natural rate

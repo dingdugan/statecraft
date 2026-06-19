@@ -17,12 +17,19 @@
 
 ### 后续（overnight loop，深度优先 —— 见 docs/spec-nation-sim.md roadmap）
 
-- [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
-      验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
-      证据: <file:line + 来源标注>
-<!-- 系统 roadmap 已全部完成；剩余仅广度项（深度优先下次第降级） -->
+<!-- 系统 roadmap + 广度（16 国）均已完成。剩余是更深的平衡迭代：让评分随时间衰减，
+     使强国也必须主动经营才能夺胜（当前强国可较被动达成超级强国胜利）。见 docs/research-overnight-report.md。 -->
 
 ## Done
+
+### 复盘 + 后续改进（review/QA 之后）
+
+- [x] Review/QA pass：对抗式代码评审 + 平衡 sim + 浏览器 QA；修 P0 存档迁移崩溃、P1 胜利过易、P1 K_RESOURCE 量纲、P2 年份差一
+      证据: commit 26ccb83；engine.test.ts (j) 存档迁移回归测试；9/9 绿；浏览器结束屏已验证
+- [x] 实际-GDP 再平衡：priceLevel 通缩因子；score 财富项与 PROSPERITY 胜利改用实际人均GDP
+      证据: economy.ts(priceLevel)/score.ts/failStates.ts/save.ts；平衡 sim 显示被动 play 结局多样化
+- [x] 扩展国家集 6 → 16：加 US/IN/UK/FR/BR/RU/KR/ZA/ID/MX，全字段真实量级 + 标注；校准默认支出近平衡
+      证据: src/data/countries.ts；fuzz 50回合×16国 0 异常；sim 结局 11胜/3下台/1到期/1破产
 
 ### Loop 迭代（overnight，深度优先）
 

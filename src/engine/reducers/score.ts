@@ -5,10 +5,10 @@ import { clamp, sigmoid } from '../util';
 
 /** Pure: compute prosperity (0..100) and composite score (geo-mean with stability). */
 export function computeScore(s: GameState): void {
-  const gdpPerCap = (s.gdp * 1e9) / (s.population * 1e6); // USD
-  // each sub-band is clamped to its documented range (design-engine §4 step 5) so a
-  // long game's nominal-GDP compounding can't inflate wealth past 40, nor jobs go negative
-  const wealth = clamp(40 * (Math.log10(gdpPerCap / C.REF_PC + 1) / Math.log10(11)), 0, 40);
+  // real (deflated) per-capita GDP so wealth reflects real prosperity, not inflation
+  const realGdpPerCap = (s.gdp * 1e9) / (s.population * 1e6) / s.priceLevel;
+  // each sub-band is clamped to its documented range (design-engine §4 step 5)
+  const wealth = clamp(40 * (Math.log10(realGdpPerCap / C.REF_PC + 1) / Math.log10(11)), 0, 40);
   const growth = clamp(25 * sigmoid(s.gdpGrowthReal / 0.04), 0, 25);
   const jobs = clamp(20 * (1 - s.unemployment / 0.25), 0, 20);
   const prices = clamp(15 * (1 - Math.min(1, Math.abs(s.inflation - 0.02) / 0.1)), 0, 15);

@@ -95,9 +95,11 @@ A follow-up adversarial review + balance sim + browser QA ran after the loop. Fi
 - **P1** `K_RESOURCE` 0.3 → 0.06 (it could add +9pp growth, dwarfing other terms).
 - **P2** end-year off-by-one fixed.
 
-9/9 Vitest gates green; 0 numeric anomalies across 18 playthroughs. **Still deferred**: the
-deeper score rebalance (nominal-GDP wealth saturation lets strong states reach the
-floor passively) and country expansion 6 → ~16.
+9/9 Vitest gates green; 0 numeric anomalies. **Done since** (same morning): real-GDP scoring
+(priceLevel deflator) + **country expansion 6 → 16** (US/IN/UK/FR/BR/RU/KR/ZA/ID/MX). Balance
+sim now shows diverse passive-play outcomes (11 victory / 3 voted-out / 1 ended / 1 bankrupt).
+**Still deferred**: scores don't decay over time, so strong states can still reach the victory
+floor fairly passively — the next balance iteration (make stability/legitimacy require upkeep).
 
 ## How to run / play
 

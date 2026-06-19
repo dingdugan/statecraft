@@ -32,11 +32,11 @@ export function checkFailStates(s: GameState, ctx: StepContext): GameState {
   // victory — only after a meaningful tenure (>= 20 years), so a win is earned over decades,
   // not handed out for pressing "advance" a few times (collapse already returned above)
   if (s.turn >= 20) {
-    const gdpPerCap = (s.gdp * 1e9) / (s.population * 1e6);
+    const realGdpPerCap = (s.gdp * 1e9) / (s.population * 1e6) / s.priceLevel;
     const allies = Object.values(s.relations).filter((r) => r > 40).length;
     let win: string | null = null;
     if (s.victoryStreak >= 8) win = '超级强国（治国评分长期居于 87+）';
-    else if (gdpPerCap >= 100000 && s.qualityOfLife >= 70) win = '富庶之邦（人均 GDP 破 $100k、民生优渥）';
+    else if (realGdpPerCap >= 100000 && s.qualityOfLife >= 70) win = '富庶之邦（实际人均 GDP 破 $100k、民生优渥）';
     else if (s.globalStanding >= 75 && allies >= 3 && !s.warWith && s.warExhaustion < 5)
       win = '世界调停者（声望卓著、盟友环绕、长享和平）';
     else if (s.climateStress <= 10 && s.qualityOfLife >= 80 && s.emissions <= 45)

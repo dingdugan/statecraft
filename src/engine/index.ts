@@ -29,6 +29,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
     techLevel: st.techLevel,
     unemployment: st.unemployment,
     inflation: st.inflation,
+    priceLevel: 1.0,
 
     population: st.population,
     popGrowth: st.popGrowth,
