@@ -20,7 +20,7 @@
 - [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
       验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
       证据: <file:line + 来源标注>
-- [ ] 加 Military / Diplomacy / War / Resources / Scenarios（按 roadmap 逐个）
+- [ ] 加 Diplomacy & trade / War / Resources & environment / Scenarios（按 roadmap 逐个）
       验收: 每个系统 reducer+data+UI+测试+commit
       证据: <逐条补>
 
@@ -35,6 +35,10 @@
 - [x] Technology/R&D 系统：techLevel 由 R&D 支出+教育驱动，喂入增长(techBonus)与生产率
       验收: R&D 的增长效应改经 techLevel(存量)而非直接 flow；生产率跟随 techLevel；新字段进 fuzz 钳制
       证据: src/engine/reducers/tech.ts(stepTech 插入 demographics→economy 之间)；economy.ts(techBonus 取代 rndEff)；constants.ts(TECH_*)；6 国 techLevel 起始数据；UI 经济组「科技水平」；engine.test.ts techLevel bounds → 6/6 绿；build 干净
+
+- [x] Military 系统：军力指数 / 战备 / 政变风险 + 新增 'coup' fail-state
+      验收: stepMilitary 在 politics 后(政变风险读当年稳定度)；战备随军费、军力随战备+科技+人口；coupRisk≥90→政变；政体调节(民主几乎不政变)；新字段进 fuzz
+      证据: src/engine/reducers/military.ts；advanceTurn.ts(stepMilitary 在 politics→score 间)；failStates.ts(coup)；6 国军事起始数据；UI「军事」组(军力/战备/政变风险)+国防大臣简报+coup 结束屏；engine.test.ts 军事字段 bounds → 6/6 绿；浏览器中国仪表盘已验证
 
 ### MVP — 全部完成并经浏览器冷启动 walkthrough 验证（2026-06-19）
 

@@ -97,6 +97,12 @@ export function dashboardHTML(s: GameState): string {
     stat('合法性', s.legitimacy.toFixed(0), tone3(s.legitimacy, 50, 35)),
   ].join('');
 
+  const military = [
+    stat('军力指数', s.militaryStrength.toFixed(0), tone3(s.militaryStrength, 40, 20)),
+    stat('战备', s.militaryReadiness.toFixed(0), tone3(s.militaryReadiness, 55, 35)),
+    stat('政变风险', s.coupRisk.toFixed(0), tone3(s.coupRisk, 40, 70, true)),
+  ].join('');
+
   const brief = briefings(s)
     .map((b) => `<li class="brief ${b.tone}"><span class="who">${b.who}</span>${esc(b.msg)}</li>`)
     .join('');
@@ -108,6 +114,7 @@ export function dashboardHTML(s: GameState): string {
       <section class="group"><h3>社会</h3>${social}</section>
       <section class="group"><h3>财政</h3>${fiscal}</section>
       <section class="group"><h3>政治</h3>${politics}</section>
+      <section class="group"><h3>军事</h3>${military}</section>
     </div>
     <section class="briefings"><h3>内阁简报</h3><ul>${brief}</ul></section>
   </div>`;
@@ -198,6 +205,7 @@ export function endHTML(s: GameState): string {
   const titles: Record<string, string> = {
     bankrupt: '💥 国家破产',
     revolution: '🔥 政权倾覆',
+    coup: '⚔️ 军事政变',
     voted_out: '🗳️ 黯然下台',
     ended: '🏁 任期落幕',
   };

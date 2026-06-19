@@ -20,6 +20,13 @@ export function checkFailStates(s: GameState, ctx: StepContext): GameState {
     return s;
   }
 
+  if (s.coupRisk >= 90) {
+    s.status = 'coup';
+    s.endReason = `军队倒戈、发动政变，你的政府于 ${ctx.year} 年被推翻。`;
+    ctx.log.push({ kind: 'fail', msg: '⚔️ 军事政变 —— 政权易主。' });
+    return s;
+  }
+
   if (s.year >= C.END_YEAR) {
     s.status = 'ended';
     s.endReason = `执政至 ${C.END_YEAR} 年，留下最终治国评分。`;

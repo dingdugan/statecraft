@@ -44,6 +44,10 @@ export function newGame(countryId: string, seed: number): GameState {
     termYearsLeft: c.govType === 'democracy' ? C.TERM_LENGTH : 0,
     lowStabilityStreak: 0,
 
+    militaryStrength: st.militaryStrength,
+    militaryReadiness: st.militaryReadiness,
+    coupRisk: 0,
+
     taxRate: st.taxRate,
     spendingPctGdp: st.spendingPctGdp,
     allocation: { ...st.allocation },

@@ -13,7 +13,7 @@
 //   GAME PROXY / CALIBRATED (not a real poll or statistic — a starting position):
 //     approval, stability, educationLevel (0..100 index), healthIndex (0..100),
 //     laborParticipation, creditRating (0..20 game scale), allocation (budget tilt),
-//     productivity / techLevel (0.5..3 index)
+//     productivity / techLevel (0.5..3 index), militaryStrength / militaryReadiness (0..100)
 //
 // TODO(loop): verify/refine specific figures against named sources; expand 6 → ~16.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -47,6 +47,8 @@ export const COUNTRIES: CountryDef[] = [
       healthIndex: 88,
       approval: 50,
       stability: 80,
+      militaryStrength: 45,
+      militaryReadiness: 75,
       taxRate: 0.42,
       spendingPctGdp: 0.4,
       allocation: { military: 0.06, education: 0.11, healthcare: 0.22, infrastructure: 0.1, welfare: 0.45, rnd: 0.06 },
@@ -81,6 +83,8 @@ export const COUNTRIES: CountryDef[] = [
       healthIndex: 90,
       approval: 45,
       stability: 78,
+      militaryStrength: 50,
+      militaryReadiness: 80,
       taxRate: 0.34,
       spendingPctGdp: 0.34,
       allocation: { military: 0.05, education: 0.09, healthcare: 0.25, infrastructure: 0.12, welfare: 0.43, rnd: 0.06 },
@@ -115,6 +119,8 @@ export const COUNTRIES: CountryDef[] = [
       healthIndex: 45,
       approval: 42,
       stability: 45,
+      militaryStrength: 35,
+      militaryReadiness: 60,
       taxRate: 0.1,
       spendingPctGdp: 0.11,
       allocation: { military: 0.16, education: 0.13, healthcare: 0.08, infrastructure: 0.28, welfare: 0.3, rnd: 0.05 },
@@ -149,6 +155,8 @@ export const COUNTRIES: CountryDef[] = [
       healthIndex: 90,
       approval: 60,
       stability: 85,
+      militaryStrength: 55,
+      militaryReadiness: 90,
       taxRate: 0.18,
       spendingPctGdp: 0.18,
       allocation: { military: 0.2, education: 0.2, healthcare: 0.14, infrastructure: 0.2, welfare: 0.16, rnd: 0.1 },
@@ -183,6 +191,8 @@ export const COUNTRIES: CountryDef[] = [
       healthIndex: 70,
       approval: 58,
       stability: 72,
+      militaryStrength: 55,
+      militaryReadiness: 85,
       taxRate: 0.3,
       spendingPctGdp: 0.28,
       allocation: { military: 0.22, education: 0.16, healthcare: 0.12, infrastructure: 0.22, welfare: 0.24, rnd: 0.04 },
@@ -217,6 +227,8 @@ export const COUNTRIES: CountryDef[] = [
       healthIndex: 75,
       approval: 60,
       stability: 75,
+      militaryStrength: 80,
+      militaryReadiness: 85,
       taxRate: 0.28,
       spendingPctGdp: 0.27,
       allocation: { military: 0.1, education: 0.15, healthcare: 0.12, infrastructure: 0.3, welfare: 0.23, rnd: 0.1 },

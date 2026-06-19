@@ -108,6 +108,13 @@ export function briefings(s: GameState): Briefing[] {
   if (s.healthIndex < 45)
     out.push({ who: SOC, msg: `医疗体系薄弱（健康指数 ${s.healthIndex.toFixed(0)}）。`, tone: 'warn' });
 
+  // military
+  const DEF = '国防大臣';
+  if (s.coupRisk >= 60)
+    out.push({ who: DEF, msg: `军中离心，政变风险高企（${s.coupRisk.toFixed(0)}）。`, tone: 'bad' });
+  else if (s.militaryReadiness < 35)
+    out.push({ who: DEF, msg: `部队战备不足（${s.militaryReadiness.toFixed(0)}），军费压缩过度。`, tone: 'warn' });
+
   if (out.length === 0)
     out.push({ who: '内阁', msg: '各项指标平稳，无紧急事项。', tone: 'good' });
 

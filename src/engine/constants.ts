@@ -44,6 +44,10 @@ export const C = {
   TECH_EDU: 0.006, // education contribution to tech target
   K_TECH_GROWTH: 0.015, // growth bonus per unit techLevel above 1.0
 
+  // military
+  MIL_READY_STEP: 8, // max readiness move per year
+  MIL_STR_STEP: 3, // max strength move per year
+
   // social
   HEALTH_STEP: 4, // max health-index move per year
   INEQ_UNEMP: 0.03, // inequality pressure per unit unemployment gap
