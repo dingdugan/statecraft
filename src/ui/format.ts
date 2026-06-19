@@ -139,6 +139,9 @@ export function briefings(s: GameState): Briefing[] {
   else if (s.resourceIncome > 0.06 && s.commodityPrice > 1.3)
     out.push({ who: RES, msg: `大宗价格走高（${s.commodityPrice.toFixed(2)}），资源收入丰厚。`, tone: 'good' });
 
+  if (s.victoryStreak >= 1 && s.victoryStreak < 5)
+    out.push({ who: '国务院', msg: `治国评分维持 85+ 已 ${s.victoryStreak}/5 年，再接再厉即问鼎「超级强国」。`, tone: 'good' });
+
   if (out.length === 0)
     out.push({ who: '内阁', msg: '各项指标平稳，无紧急事项。', tone: 'good' });
 

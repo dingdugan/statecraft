@@ -19,6 +19,7 @@ interface App {
   pendingTax: number;
   pendingSpend: number;
   pendingPolicies: string[];
+  selectedScenario: string;
 }
 
 const esc = (x: string) => x.replace(/</g, '&lt;');
@@ -37,6 +38,7 @@ const app: App = {
   pendingTax: 0.3,
   pendingSpend: 0.3,
   pendingPolicies: [],
+  selectedScenario: 'standard',
 };
 
 const root = document.getElementById('app')!;
@@ -53,7 +55,7 @@ function startGame(id: string): void {
   let seed = Date.now() & 0x7fffffff;
   for (let i = 0; i < id.length; i++) seed = (seed * 31 + id.charCodeAt(i)) | 0;
   seed &= 0x7fffffff;
-  const g = newGame(id, seed);
+  const g = newGame(id, seed, app.selectedScenario);
   app.game = g;
   app.screen = 'play';
   syncPendingFromGame(g);
@@ -129,7 +131,7 @@ function saveBarHTML(): string {
 
 function render(): void {
   if (app.screen === 'menu') {
-    root.innerHTML = menuHTML(!!loadAuto());
+    root.innerHTML = menuHTML(!!loadAuto(), app.selectedScenario);
     return;
   }
   if (app.screen === 'end' && app.game) {
@@ -137,7 +139,7 @@ function render(): void {
     return;
   }
   if (!app.game) {
-    root.innerHTML = menuHTML(!!loadAuto());
+    root.innerHTML = menuHTML(!!loadAuto(), app.selectedScenario);
     return;
   }
   const g = app.game;
@@ -188,11 +190,12 @@ root.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
   if (!t) return;
   const action = t.dataset.action;
-  // while an event modal is open, only resolving it (or bailing to menu) is allowed
-  if (app.game?.pendingEventId && action !== 'resolve' && action !== 'menu') return;
+  // on the play screen, while an event modal is open, only resolving it (or menu) is allowed
+  if (app.screen === 'play' && app.game?.pendingEventId && action !== 'resolve' && action !== 'menu') return;
   const slot = Number(t.dataset.slot);
   switch (action) {
     case 'pick': startGame(t.dataset.id!); break;
+    case 'scenario': app.selectedScenario = t.dataset.id!; render(); break;
     case 'continue': continueGame(); break;
     case 'advance': doAdvance(); break;
     case 'resolve': doResolve(Number(t.dataset.opt)); break;

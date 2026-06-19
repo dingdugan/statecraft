@@ -164,7 +164,7 @@ describe('(g) prosperous play is not degenerate', () => {
   it('a healthy state stays governing with a strong score over 25 years', () => {
     let s = newGame('DE', 2025);
     for (let i = 0; i < 25 && s.status === 'playing'; i++) s = play(s); // keep defaults
-    expect(s.status).toBe('playing');
+    expect(['playing', 'victory']).toContain(s.status); // healthy: still governing or already won
     expect(s.score).toBeGreaterThan(45);
   });
 });
@@ -177,5 +177,13 @@ describe('(h) war resolves', () => {
     s.militaryReadiness = 95;
     for (let i = 0; i < 15 && s.warWith !== null && s.status === 'playing'; i++) s = play(s);
     expect(s.warWith).toBeNull();
+  });
+});
+
+describe('(i) victory reachable', () => {
+  it('a strong, well-run state reaches a victory within a few decades', () => {
+    let s = newGame('DE', 2025);
+    for (let i = 0; i < 40 && s.status === 'playing'; i++) s = play(s);
+    expect(s.status).toBe('victory');
   });
 });

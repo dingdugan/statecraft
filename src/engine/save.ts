@@ -35,6 +35,7 @@ export function deserialize(str: string): GameState | null {
       if (typeof o.resourceIncome !== 'number') o.resourceIncome = 0;
       if (typeof o.emissions !== 'number') o.emissions = 40;
       if (typeof o.climateStress !== 'number') o.climateStress = 0;
+      if (typeof o.victoryStreak !== 'number') o.victoryStreak = 0;
       return o as GameState;
     }
     return null;

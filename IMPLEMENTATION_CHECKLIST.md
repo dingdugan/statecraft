@@ -20,9 +20,7 @@
 - [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
       验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
       证据: <file:line + 来源标注>
-- [ ] 加 Scenarios & victory（roadmap 最后一项）
-      验收: reducer/逻辑 + data + UI + 测试 + commit
-      证据: <补>
+<!-- 系统 roadmap 已全部完成；剩余仅广度项（深度优先下次第降级） -->
 
 ## Done
 
@@ -51,6 +49,10 @@
 - [x] Resources & environment 系统：大宗价格周期 / 资源收入 / 枯竭 / 碳排放 / 气候压力
       验收: stepResources 在 diplomacy→economy 间；oil/resource 国按大宗价格得资源收入(喂储备+增长)并随开采枯竭；高工业+低绿色投入→高排放，排放累积成气候压力，拖累增长(economy)与生活质量(social)
       证据: src/engine/reducers/resources.ts(stepResources/computeResources)；economy.ts(K_RESOURCE/K_CLIMATE)；social.ts(qol 气候扣减)；6 国 resourceDepletion/climateStress 起始；UI「资源环境」组+资源环境部简报；engine.test.ts 5 字段 bounds → 7/7 绿
+
+- [x] Scenarios & victory：4 个胜利条件 + 'victory' 状态 + 3 个开局剧本
+      验收: checkFailStates 内每回合检查胜利(超级强国/富庶之邦/世界调停者/绿色文明)，败局优先于胜利；victoryStreak 连击计；菜单可选剧本(现代/债务危机/冷战)扰动起始数值
+      证据: failStates.ts(victory 块+victoryStreak)；data/scenarios.ts；index.ts(newGame scenarioId 参数+apply 重算)；UI 菜单「开局剧本」选择器+victory 结束屏+国务院简报；engine.test.ts gate (i) DE 40 回合夺胜、(g) 容忍 victory → 8/8 绿；浏览器剧本选择器已验证
 
 ### MVP — 全部完成并经浏览器冷启动 walkthrough 验证（2026-06-19）
 

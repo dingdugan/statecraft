@@ -3,12 +3,13 @@ import { getCountry } from '../data/countries';
 import { makeRngState } from './rng';
 import { computeScore } from './reducers/score';
 import { computeQol } from './reducers/social';
-import { initRelations } from './reducers/diplomacy';
+import { initRelations, computeDiplomacy } from './reducers/diplomacy';
 import { computeResources } from './reducers/resources';
+import { getScenario } from '../data/scenarios';
 import { C } from './constants';
 import type { GameState } from './types';
 
-export function newGame(countryId: string, seed: number): GameState {
+export function newGame(countryId: string, seed: number, scenarioId = 'standard'): GameState {
   const c = getCountry(countryId);
   const st = c.start;
   const s: GameState = {
@@ -76,6 +77,7 @@ export function newGame(countryId: string, seed: number): GameState {
 
     prosperity: 0,
     score: 0,
+    victoryStreak: 0,
 
     usedEventIds: [],
     usedPolicyIds: [],
@@ -85,6 +87,12 @@ export function newGame(countryId: string, seed: number): GameState {
   computeQol(s);
   initRelations(s);
   computeScore(s);
+  if (scenarioId !== 'standard') {
+    getScenario(scenarioId).apply(s);
+    computeDiplomacy(s);
+    computeQol(s);
+    computeScore(s);
+  }
   return s;
 }
 

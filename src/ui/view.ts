@@ -2,6 +2,7 @@ import type { Allocation, GameState, SpendCategory } from '../engine/types';
 import { COUNTRIES, getCountry } from '../data/countries';
 import { getEvent } from '../data/events';
 import { POLICIES } from '../data/policies';
+import { SCENARIOS } from '../data/scenarios';
 import { SPEND_CATEGORIES } from '../engine/util';
 import {
   briefings, fmtMoney, fmtMoneyShort, fmtPct, fmtPop, fmtSigned,
@@ -15,7 +16,7 @@ function stat(k: string, v: string, tone = ''): string {
 }
 
 // ─── Menu / country select ───────────────────────────────────────────────────
-export function menuHTML(hasAuto: boolean): string {
+export function menuHTML(hasAuto: boolean, selectedScenario: string): string {
   const cards = COUNTRIES.map((c) => {
     const s = c.start;
     const pc = ((s.gdp * 1e9) / (s.population * 1e6)).toFixed(0);
@@ -32,12 +33,19 @@ export function menuHTML(hasAuto: boolean): string {
     </button>`;
   }).join('');
 
+  const scenarioBtns = SCENARIOS.map(
+    (sc) =>
+      `<button class="scenario ${sc.id === selectedScenario ? 'on' : ''}" data-action="scenario" data-id="${sc.id}" title="${esc(sc.descZh)}">${esc(sc.nameZh)}</button>`,
+  ).join('');
+
   return `<div class="menu">
     <header class="title-block">
       <h1>Statecraft <span class="zh">庙堂</span></h1>
       <p class="tagline">没有地图，没有图形。只有你、你的国家，和一个个艰难的决定。<br/>选择一个国家，逐年执政，看经济·人口·政治如何连锁回响。</p>
     </header>
     ${hasAuto ? `<button class="btn primary continue" data-action="continue">▸ 继续上次的存档</button>` : ''}
+    <h2 class="section-h">开局剧本</h2>
+    <div class="scenario-row">${scenarioBtns}</div>
     <h2 class="section-h">选择你要执掌的国家</h2>
     <div class="country-grid">${cards}</div>
   </div>`;
@@ -230,6 +238,7 @@ export function reportHTML(s: GameState): string {
 export function endHTML(s: GameState): string {
   const c = getCountry(s.countryId);
   const titles: Record<string, string> = {
+    victory: '🏆 功成名就',
     bankrupt: '💥 国家破产',
     revolution: '🔥 政权倾覆',
     coup: '⚔️ 军事政变',

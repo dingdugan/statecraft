@@ -1,7 +1,8 @@
 // Core type contracts for the simulation engine. See docs/design-engine.md §1.
 
 export type GovType = 'democracy' | 'authoritarian' | 'monarchy' | 'hybrid';
-export type Status = 'playing' | 'bankrupt' | 'revolution' | 'coup' | 'defeated' | 'voted_out' | 'ended';
+export type Status =
+  | 'playing' | 'bankrupt' | 'revolution' | 'coup' | 'defeated' | 'voted_out' | 'ended' | 'victory';
 export type Sector = 'agriculture' | 'industry' | 'services';
 export type SpendCategory =
   | 'military' | 'education' | 'healthcare' | 'infrastructure' | 'welfare' | 'rnd';
@@ -98,6 +99,7 @@ export interface GameState {
   // scoring
   prosperity: number; // 0..100 (derived each turn)
   score: number; // 0..100 composite
+  victoryStreak: number; // consecutive years at score >= 85 (for SUPERPOWER victory)
 
   // events / policies
   pendingEventId?: string;
