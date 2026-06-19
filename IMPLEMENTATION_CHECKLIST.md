@@ -22,9 +22,9 @@
 - [x] v2.1 世界重构（包装复用策略）：WorldState + advanceWorld 对16国各跑现有 advanceTurn + worldSync(关系对称化/战争双向卷入) + aiDecide 骨架 + newWorld + 世界存档；UI 接 world(玩家=countries[playerId])
       验收: tsc 干净；15/15 测试绿(9单国+6世界: determinism/存档往返/16国齐步推进/玩家 fail&victory 可达/16国×30回合 fuzz)；浏览器 选DE→推进 无报错
       证据: src/engine/world.ts(advanceWorld/worldSync/genNews)；ai.ts(aiDecide)；index.ts(newWorld)；save.ts(serializeWorld/deserializeWorld/worldFingerprint)；main.ts+saveLoad.ts 接 WorldState；world.test.ts 6 门槛
-- [ ] v2.2 世界面板 + 新闻流 UI：各国摘要 / 实力排名 / 关系矩阵 + 本回合世界新闻流
-      验收: 玩家看得到 16 国状态与世界在发生什么；浏览器验证
-      证据: <截图>
+- [x] v2.2 世界面板 + 新闻流 UI：「本国/世界」切换；列国表(按GDP排名: 国家/政体/GDP/对你关系/态势/评分, 玩家行高亮) + 世界新闻流(world.news)
+      验收: 浏览器验证——德国局切「世界」显示全 16 国排名(美国#1)、对你关系、态势；tsc 干净、15/15 测试绿
+      证据: src/ui/view.ts(worldViewHTML/REL_TIER/STATUS_ZH)；main.ts(app.view+viewtabs)；style.css(viewtabs/news/nations)；eval 验证 nationRows=16 + 截图列国表
 - [ ] v2.3 AI 完善 + 国家间真交互：他国理性决策；彼此(不只对玩家)结盟/交恶/开战
       验收: sim 显示他国之间也有外交与战争动态；有测试
       证据: <测试名 + sim>

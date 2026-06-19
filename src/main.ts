@@ -6,7 +6,7 @@ import { getCountry } from './data/countries';
 import { GOV_LABELS } from './ui/format';
 import { autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS } from './ui/saveLoad';
 import {
-  menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML,
+  menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML, worldViewHTML,
 } from './ui/view';
 
 type Screen = 'menu' | 'play' | 'end';
@@ -18,6 +18,7 @@ interface App {
   pendingSpend: number;
   pendingPolicies: string[];
   selectedScenario: string;
+  view: 'home' | 'world';
 }
 
 const esc = (x: string) => x.replace(/</g, '&lt;');
@@ -34,6 +35,7 @@ const app: App = {
   pendingSpend: 0.3,
   pendingPolicies: [],
   selectedScenario: 'standard',
+  view: 'home',
 };
 
 const root = document.getElementById('app')!;
@@ -140,10 +142,15 @@ function render(): void {
     root.innerHTML = endHTML(g);
     return;
   }
+  const tabs = `<div class="viewtabs">
+    <button class="tab ${app.view === 'home' ? 'on' : ''}" data-action="view" data-view="home">本国</button>
+    <button class="tab ${app.view === 'world' ? 'on' : ''}" data-action="view" data-view="world">世界</button>
+  </div>`;
+  const leftMain = app.view === 'world' ? worldViewHTML(app.world!) : `${dashboardHTML(g)}${reportHTML(g)}`;
   root.innerHTML = `<div class="play">
       ${headerHTML(g)}
       <div class="cols">
-        <div class="left">${dashboardHTML(g)}${reportHTML(g)}</div>
+        <div class="left">${tabs}${leftMain}</div>
         <div class="right">${decisionsHTML(g, app.pendingTax, app.pendingSpend, app.pendingAlloc, app.pendingPolicies)}${saveBarHTML()}</div>
       </div>
     </div>
@@ -188,11 +195,12 @@ root.addEventListener('click', (e) => {
   if (!t) return;
   const action = t.dataset.action;
   // on the play screen, while an event modal is open, only resolving it (or menu) is allowed
-  if (app.screen === 'play' && player()?.pendingEventId && action !== 'resolve' && action !== 'menu') return;
+  if (app.screen === 'play' && player()?.pendingEventId && action !== 'resolve' && action !== 'menu' && action !== 'view') return;
   const slot = Number(t.dataset.slot);
   switch (action) {
     case 'pick': startGame(t.dataset.id!); break;
     case 'scenario': app.selectedScenario = t.dataset.id!; render(); break;
+    case 'view': app.view = t.dataset.view === 'world' ? 'world' : 'home'; render(); break;
     case 'continue': continueGame(); break;
     case 'advance': doAdvance(); break;
     case 'resolve': doResolve(Number(t.dataset.opt)); break;

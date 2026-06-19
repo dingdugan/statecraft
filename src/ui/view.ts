@@ -1,4 +1,5 @@
 import type { Allocation, GameState, SpendCategory } from '../engine/types';
+import type { WorldState } from '../engine/world';
 import { COUNTRIES, getCountry } from '../data/countries';
 import { getEvent } from '../data/events';
 import { POLICIES } from '../data/policies';
@@ -259,5 +260,54 @@ export function endHTML(s: GameState): string {
       ${stat('支持率', s.approval.toFixed(0))}
     </div>
     <button class="btn primary" data-action="menu">↺ 再来一局</button>
+  </div>`;
+}
+
+// ─── World view (v2.2): news feed + nations table ────────────────────────────────
+const REL_TIER = (r: number): string =>
+  r > 40 ? '盟友' : r > 15 ? '友好' : r > -15 ? '中立' : r > -40 ? '紧张' : '敌对';
+const STATUS_ZH: Record<string, string> = {
+  bankrupt: '破产', revolution: '革命', coup: '政变', defeated: '战败',
+  voted_out: '下台', victory: '鼎盛', ended: '落幕',
+};
+
+export function worldViewHTML(world: WorldState): string {
+  const me = world.countries[world.playerId];
+  const news = world.news.length
+    ? world.news.map((n) => `<li class="news ${n.kind}">${esc(n.msg)}</li>`).join('')
+    : '<li class="news muted">本年世界平静，无重大事件。</li>';
+
+  const ranked = COUNTRIES.map((c) => world.countries[c.id])
+    .filter((cs): cs is GameState => Boolean(cs))
+    .sort((a, b) => b.gdp - a.gdp);
+
+  const rows = ranked.map((cs, i) => {
+    const c = getCountry(cs.countryId);
+    const isMe = cs.countryId === world.playerId;
+    const rel = isMe ? undefined : me.relations[cs.countryId];
+    const relTone = rel === undefined ? '' : rel > 40 ? 'good' : rel < -40 ? 'bad' : '';
+    const relTxt = isMe
+      ? '<span class="muted">你</span>'
+      : rel === undefined ? '—' : `${REL_TIER(rel)} ${rel.toFixed(0)}`;
+    const situ =
+      cs.status !== 'playing'
+        ? `<span class="bad">${STATUS_ZH[cs.status] ?? cs.status}</span>`
+        : cs.warWith
+          ? `<span class="bad">⚔️ ${getCountry(cs.warWith).nameZh}</span>`
+          : '和平';
+    return `<tr class="${isMe ? 'me' : ''}">
+      <td>${i + 1}</td><td>${c.flag} ${c.nameZh}</td><td>${GOV_LABELS[cs.govType]}</td>
+      <td>${fmtMoneyShort(cs.gdp)}</td><td class="v ${relTone}">${relTxt}</td><td>${situ}</td>
+      <td class="v">${cs.score.toFixed(0)}</td></tr>`;
+  }).join('');
+
+  return `<div class="worldview">
+    <section class="worldnews group"><h3>世界新闻 · ${me.year} 年</h3><ul>${news}</ul></section>
+    <section class="worldtable group"><h3>列国 · 按 GDP 排名</h3>
+      <table class="nations">
+        <thead><tr><th>#</th><th>国家</th><th>政体</th><th>GDP</th><th>对你</th><th>态势</th><th>评分</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </section>
   </div>`;
 }
