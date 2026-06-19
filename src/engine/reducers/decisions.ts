@@ -1,0 +1,23 @@
+import type { GameState } from '../types';
+import type { StepContext } from '../context';
+import { TAX_MIN, TAX_MAX, SPEND_MIN, SPEND_MAX } from '../constants';
+import { clamp, normalizeAllocation } from '../util';
+import { POLICIES } from '../../data/policies';
+
+/** Apply the player's pending decisions (levers + enacted policies). Runs first. */
+export function applyDecisions(s: GameState, ctx: StepContext): GameState {
+  const d = ctx.decisions;
+  if (d.taxRate !== undefined) s.taxRate = clamp(d.taxRate, TAX_MIN, TAX_MAX);
+  if (d.spendingPctGdp !== undefined) s.spendingPctGdp = clamp(d.spendingPctGdp, SPEND_MIN, SPEND_MAX);
+  if (d.allocation) s.allocation = normalizeAllocation(d.allocation);
+  if (d.enactPolicyIds) {
+    for (const id of d.enactPolicyIds) {
+      const p = POLICIES.find((x) => x.id === id);
+      if (p && p.available(s)) {
+        p.apply(s, ctx);
+        ctx.log.push({ kind: 'info', msg: `政策：${p.nameZh}` });
+      }
+    }
+  }
+  return s;
+}
