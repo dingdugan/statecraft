@@ -1,0 +1,205 @@
+import './style.css';
+import { newGame, advanceTurn, resolveEventChoice } from './engine';
+import type { Allocation, GameState, PendingDecisions } from './engine/types';
+import { SPEND_CATEGORIES, normalizeAllocation } from './engine/util';
+import { getCountry } from './data/countries';
+import { GOV_LABELS } from './ui/format';
+import {
+  autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS,
+} from './ui/saveLoad';
+import {
+  menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML,
+} from './ui/view';
+
+type Screen = 'menu' | 'play' | 'end';
+interface App {
+  screen: Screen;
+  game: GameState | null;
+  pendingAlloc: Allocation;
+  pendingTax: number;
+  pendingSpend: number;
+  pendingPolicies: string[];
+}
+
+const esc = (x: string) => x.replace(/</g, '&lt;');
+
+function evenAlloc(): Allocation {
+  return SPEND_CATEGORIES.reduce(
+    (o, c) => ((o[c] = 1 / SPEND_CATEGORIES.length), o),
+    {} as Allocation,
+  );
+}
+
+const app: App = {
+  screen: 'menu',
+  game: null,
+  pendingAlloc: evenAlloc(),
+  pendingTax: 0.3,
+  pendingSpend: 0.3,
+  pendingPolicies: [],
+};
+
+const root = document.getElementById('app')!;
+
+function syncPendingFromGame(g: GameState): void {
+  app.pendingAlloc = { ...g.allocation };
+  app.pendingTax = g.taxRate;
+  app.pendingSpend = g.spendingPctGdp;
+  app.pendingPolicies = [];
+}
+
+// ─── transitions ───────────────────────────────────────────────────────────────
+function startGame(id: string): void {
+  const seed = (Date.now() & 0x7fffffff) ^ (id.charCodeAt(0) << 12) ^ (id.charCodeAt(1) << 4);
+  const g = newGame(id, seed);
+  app.game = g;
+  app.screen = 'play';
+  syncPendingFromGame(g);
+  autoSave(g);
+  render();
+}
+
+function continueGame(): void {
+  const g = loadAuto();
+  if (!g) return;
+  app.game = g;
+  app.screen = g.status === 'playing' ? 'play' : 'end';
+  syncPendingFromGame(g);
+  render();
+}
+
+function doAdvance(): void {
+  if (!app.game || app.game.pendingEventId || app.game.status !== 'playing') return;
+  const decisions: PendingDecisions = {
+    taxRate: app.pendingTax,
+    spendingPctGdp: app.pendingSpend,
+    allocation: normalizeAllocation(app.pendingAlloc),
+    enactPolicyIds: app.pendingPolicies,
+  };
+  const next = advanceTurn(app.game, decisions);
+  app.game = next;
+  autoSave(next);
+  if (next.status !== 'playing') app.screen = 'end';
+  else syncPendingFromGame(next);
+  render();
+}
+
+function doResolve(opt: number): void {
+  if (!app.game?.pendingEventId) return;
+  const next = resolveEventChoice(app.game, app.game.pendingEventId, opt);
+  app.game = next;
+  autoSave(next);
+  if (next.status !== 'playing') app.screen = 'end';
+  render();
+}
+
+function togglePolicy(id: string): void {
+  const i = app.pendingPolicies.indexOf(id);
+  if (i >= 0) app.pendingPolicies.splice(i, 1);
+  else app.pendingPolicies.push(id);
+  render();
+}
+
+// ─── render ──────────────────────────────────────────────────────────────────────
+function headerHTML(g: GameState): string {
+  const c = getCountry(g.countryId);
+  return `<header class="play-head">
+    <div class="ph-id"><span class="flag">${c.flag}</span><span class="ph-name"><b>${c.nameZh}</b><small>${GOV_LABELS[g.govType]}</small></span></div>
+    <div class="ph-year">${g.year}<small>年</small></div>
+    <div class="ph-score"><small>治国评分</small><b>${g.score.toFixed(0)}</b></div>
+    <button class="btn ghost" data-action="menu">≡ 菜单</button>
+  </header>`;
+}
+
+function saveBarHTML(): string {
+  const slots = SLOTS.map((n) => {
+    const info = slotInfo(n);
+    return `<div class="slot">
+      <span class="slot-label">${info.label ? esc(info.label) : `存档位 ${n} · 空`}</span>
+      <span class="slot-actions">
+        <button class="btn xs" data-action="save" data-slot="${n}">存</button>
+        ${info.label ? `<button class="btn xs" data-action="load" data-slot="${n}">读</button><button class="btn xs ghost" data-action="clearslot" data-slot="${n}">删</button>` : ''}
+      </span></div>`;
+  }).join('');
+  return `<section class="savebar"><h3>存档</h3>${slots}</section>`;
+}
+
+function render(): void {
+  if (app.screen === 'menu') {
+    root.innerHTML = menuHTML(!!loadAuto());
+    return;
+  }
+  if (app.screen === 'end' && app.game) {
+    root.innerHTML = endHTML(app.game);
+    return;
+  }
+  if (!app.game) {
+    root.innerHTML = menuHTML(!!loadAuto());
+    return;
+  }
+  const g = app.game;
+  root.innerHTML = `<div class="play">
+      ${headerHTML(g)}
+      <div class="cols">
+        <div class="left">${dashboardHTML(g)}${reportHTML(g)}</div>
+        <div class="right">${decisionsHTML(g, app.pendingAlloc, app.pendingPolicies)}${saveBarHTML()}</div>
+      </div>
+    </div>
+    ${eventModalHTML(g)}`;
+  attachPlayListeners();
+  updateAllocPct();
+}
+
+function updateAllocPct(): void {
+  const norm = normalizeAllocation(app.pendingAlloc);
+  for (const c of SPEND_CATEGORIES) {
+    const el = document.getElementById(`allocpct-${c}`);
+    if (el) el.textContent = `${Math.round(norm[c] * 100)}%`;
+  }
+}
+
+function attachPlayListeners(): void {
+  const tax = document.getElementById('tax') as HTMLInputElement | null;
+  tax?.addEventListener('input', () => {
+    app.pendingTax = Number(tax.value) / 100;
+    const v = document.getElementById('taxval');
+    if (v) v.textContent = `${tax.value}%`;
+  });
+  const spend = document.getElementById('spend') as HTMLInputElement | null;
+  spend?.addEventListener('input', () => {
+    app.pendingSpend = Number(spend.value) / 100;
+    const v = document.getElementById('spendval');
+    if (v) v.textContent = `${spend.value}%`;
+  });
+  for (const c of SPEND_CATEGORIES) {
+    const el = document.getElementById(`alloc-${c}`) as HTMLInputElement | null;
+    el?.addEventListener('input', () => {
+      app.pendingAlloc[c] = Number(el.value) / 1000;
+      updateAllocPct();
+    });
+  }
+}
+
+// ─── single delegated click handler ───────────────────────────────────────────────
+root.addEventListener('click', (e) => {
+  const t = (e.target as HTMLElement).closest('[data-action]') as HTMLElement | null;
+  if (!t) return;
+  const slot = Number(t.dataset.slot);
+  switch (t.dataset.action) {
+    case 'pick': startGame(t.dataset.id!); break;
+    case 'continue': continueGame(); break;
+    case 'advance': doAdvance(); break;
+    case 'resolve': doResolve(Number(t.dataset.opt)); break;
+    case 'policy': togglePolicy(t.dataset.id!); break;
+    case 'menu': app.screen = 'menu'; render(); break;
+    case 'save': if (app.game) { saveSlot(slot, app.game); render(); } break;
+    case 'load': {
+      const g = loadSlot(slot);
+      if (g) { app.game = g; app.screen = g.status === 'playing' ? 'play' : 'end'; syncPendingFromGame(g); render(); }
+      break;
+    }
+    case 'clearslot': clearSlot(slot); render(); break;
+  }
+});
+
+render();

@@ -15,54 +15,67 @@
 
 ## Active
 
-### MVP（本轮 overnight session 目标 —— 见 docs/design-engine.md 为构建契约）
+### 后续（overnight loop，深度优先 —— 见 docs/spec-nation-sim.md roadmap）
 
-- [ ] 脚手架 Vite + TS 项目（package.json / vite.config / tsconfig / vitest.config / index.html / src 目录结构）
-      验收: `npm run dev` 起本地服务器、`npm run build` 出静态 bundle、`npm test` 能跑
-      证据: <file:line / 终端输出>
-- [ ] 实现 src/engine/rng.ts —— Mulberry32 `Rng` + `RngState`（next/range/normal/pick）
-      验收: 同 seed 同序列；cursor 单调推进；可序列化
-      证据: <测试名 rng.test.ts>
-- [ ] 实现 src/engine/types.ts + constants.ts —— 全部接口 + v0 系数表
-      验收: 类型编译通过；constants 覆盖 design-engine §6 全部常量
-      证据: <file:line>
-- [ ] 写 src/data/countries.ts —— 6 个真实国家（DE/JP/NG/SG/SA/CN），每字段标注 approximate + baseline 2024
-      验收: 6 国起始数值量级合理；含 govType/traits；allocation 和=1；文件头有数据来源/口径声明
-      证据: <file:line>
-- [ ] 实现引擎 reducers（demographics/economy/fiscal/politics/score）按 design-engine §4 公式
-      验收: 各 reducer 纯函数；数值钳制生效；debt 用标准 debt/GDP 递推
-      证据: <file:line + 测试名>
-- [ ] 实现事件系统：src/data/events.ts（≥4 事件）+ engine 事件 reducer + `resolveEventChoice`
-      验收: 事件按 condition 过滤、weight 抽样、每回合最多 1 个、阻塞推进直到解决
-      证据: <file:line + 测试名 events.test.ts>
-- [ ] 实现 src/data/policies.ts（≥3 政策含 austerity / education_reform）+ apply 接入 applyDecisions
-      验收: 政策 available 门控生效；enact 后状态按 apply 改变
-      证据: <file:line>
-- [ ] 实现 src/engine/advanceTurn.ts + failStates.ts + index.ts（newGame/advanceTurn/resolveEventChoice 公共 API）
-      验收: 解算顺序符合 design-engine §3；破产/革命/voted_out/ended 判定按 §9
-      证据: <file:line>
-- [ ] 写 Vitest 测试套件（design-engine §10 的 7 个门槛 a–g）
-      验收: 决定性、存档往返一致、破产可达、革命可达、归一化、50 回合 fuzz 钳制、繁荣不退化
-      证据: <`npm test` 全绿输出 + 测试名>
-- [ ] 实现选国屏 src/ui/countrySelect.ts —— 列出 6 国 + 一句话困境 + 起始核心数值
-      验收: 点选某国 → newGame(seed) → 进入仪表盘
-      证据: <截图路径>
-- [ ] 实现仪表盘 src/ui/dashboard.ts —— 按系统分组的国家体征 + 内阁简报（ministerial briefings）文案层
-      验收: 显示经济/人口/政治/财政各组数值；简报点出需注意项
-      证据: <截图路径>
-- [ ] 实现决策面板 src/ui/decisions.ts —— 税率 / 支出占比 / 6 类预算分配 / 可选政策
-      验收: 调整后归一化 100%；显示对下一年的预期；点「推进一年」生效
-      证据: <截图路径>
-- [ ] 实现事件弹窗 src/ui/eventModal.ts + 年度报告 src/ui/yearReport.ts + 结束屏
-      验收: 事件触发弹窗、选项改变轨迹；年报解释主要变化与原因；fail/end 显示终局分数+墓志铭
-      证据: <截图路径>
-- [ ] 实现存档 src/ui/saveLoad.ts —— localStorage 多槽位存/读/删 + 接入 main.ts
-      验收: 存档后刷新页面可读回；读回的局面与存前逐字节一致（决定性）
-      证据: <截图路径 + 测试名>
-- [ ] 冷启动 walkthrough：dev 起服 → 选国 → 做决策 → 推进数年 → 触发事件 → 达成一个 fail/end
-      验收: 全链路无断点、可玩；spec 验收标准全部可勾
-      证据: <截图路径序列>
+- [ ] 扩展国家集 6 → ~16（src/data/countries.ts），并核实/精修数值对照公开来源
+      验收: 新增国家起始数值量级合理、govType/traits 完整、allocation 和=1
+      证据: <file:line + 来源标注>
+- [ ] 加 Social 系统：医疗/教育产出、不平等(Gini)、生活质量，接入 unrest/score
+      验收: 新 reducer 纯函数 + UI 面板 + 测试；score 升级为含 legitimacy 因子
+      证据: <测试名 + 截图>
+- [ ] 加 Technology/研发系统：R&D → 科技水平 → 部门生产率乘数；研究项目
+      验收: 生产率不再近似静态、与 R&D 支出挂钩；有测试
+      证据: <测试名>
+- [ ] 加 Military / Diplomacy / War / Resources / Scenarios（按 roadmap 逐个）
+      验收: 每个系统 reducer+data+UI+测试+commit
+      证据: <逐条补>
 
 ## Done
 
-<!-- 把已勾选的条目挪到这里归档，保持 Active 段简洁 -->
+### MVP — 全部完成并经浏览器冷启动 walkthrough 验证（2026-06-19）
+
+- [x] 脚手架 Vite + TS 项目（package.json / vite.config / tsconfig / index.html / src 结构）
+      验收: dev/build/test 三命令可用
+      证据: `npm run build` 成功（26 modules，dist 29KB）；vite.config.ts:1；package.json:8-14
+- [x] src/engine/rng.ts —— Mulberry32 `Rng` + `RngState`
+      验收: 同 seed 同序列、可序列化
+      证据: src/engine/rng.ts:6；测试 gate (a) determinism 绿
+- [x] src/engine/types.ts + constants.ts —— 全部接口 + v0 系数表
+      验收: 类型编译通过；constants 覆盖 design-engine §6
+      证据: src/engine/types.ts；constants.ts:6；`tsc --noEmit` exit 0
+- [x] src/data/countries.ts —— 6 真实国家，每字段标注 approximate + baseline 2024
+      验收: 量级合理、govType/traits、allocation 和=1、头部数据口径声明
+      证据: src/data/countries.ts:1-21（口径声明）；菜单截图 6 国数据正确
+- [x] 引擎 reducers（demographics/economy/fiscal/politics/score）按 design-engine §4
+      验收: 纯函数、钳制生效、标准 debt/GDP 递推
+      证据: src/engine/reducers/*.ts；测试 gate (e)(f) 50 回合 fuzz 钳制绿
+- [x] 事件系统：src/data/events.ts（6 事件）+ engine 事件 reducer + resolveEventChoice
+      验收: condition 过滤、weight 抽样、每回合≤1、阻塞推进直到解决
+      证据: src/data/events.ts；reducers/events.ts:9；浏览器实测 科技繁荣 事件触发+解决
+- [x] src/data/policies.ts（4 政策）+ apply 接入 applyDecisions
+      验收: available 门控生效；enact 后状态按 apply 改变
+      证据: policies.ts；浏览器实测 紧缩/财政刺激 正确置灰、教育改革/反腐 可选
+- [x] advanceTurn.ts + failStates.ts + index.ts（newGame/advanceTurn/resolveEventChoice）
+      验收: 解算顺序符合 §3；破产/革命/voted_out/ended 判定符合 §9
+      证据: advanceTurn.ts:14；failStates.ts；测试 gate (c) 破产 (d) 革命 绿
+- [x] Vitest 测试套件（§10 的 7 个门槛 a–g）
+      验收: 决定性/存档往返/破产可达/革命可达/归一化/fuzz钳制/繁荣不退化
+      证据: src/engine/engine.test.ts；`npm test` → 6 passed
+- [x] 选国屏 src/ui/view.ts:menuHTML —— 6 国 + 困境 + 起始数值
+      验收: 点选 → newGame → 进仪表盘
+      证据: view.ts:18；菜单截图；实测点 德国 进入
+- [x] 仪表盘 dashboardHTML —— 按系统分组体征 + 内阁简报
+      验收: 经济/人口/财政/政治分组 + 简报点出注意项 + 语义配色
+      证据: view.ts:60；format.ts:briefings;仪表盘截图（评分83/AAA/各组数值）
+- [x] 决策面板 decisionsHTML —— 税率/支出/6类分配/政策
+      验收: 归一化100%、显示说明、点推进生效
+      证据: view.ts:130；main.ts:attachPlayListeners；截图（分配和=100%）
+- [x] 事件弹窗 eventModalHTML + 年度报告 reportHTML + 结束屏 endHTML
+      验收: 事件弹窗+选项改轨迹；年报解释变化；终局显示分数+墓志铭
+      证据: view.ts:eventModalHTML/reportHTML/endHTML；实测弹窗+「2026纪要」日志
+- [x] 存档 src/ui/saveLoad.ts —— localStorage 多槽位存/读/删 + 接入 main.ts
+      验收: 存档后可读回；读回局面与存前逐字节一致（决定性）
+      证据: saveLoad.ts；engine/save.ts；测试 gate (b) save/reload identity 绿；实测槽1存档显示「德国·2026年·评分79」
+- [x] 冷启动 walkthrough：dev起服→选国→决策→推进→触发事件→存档
+      验收: 全链路无断点、可玩、无 console 报错
+      证据: 浏览器 walkthrough 全程截图；preview_logs 无 server error

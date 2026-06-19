@@ -1,0 +1,202 @@
+import type { Allocation, GameState, SpendCategory } from '../engine/types';
+import { COUNTRIES, getCountry } from '../data/countries';
+import { getEvent } from '../data/events';
+import { POLICIES } from '../data/policies';
+import { SPEND_CATEGORIES } from '../engine/util';
+import {
+  briefings, fmtMoney, fmtMoneyShort, fmtPct, fmtPop, fmtSigned,
+  GOV_LABELS, ratingLabel, SPEND_LABELS,
+} from './format';
+
+const esc = (x: string) => x.replace(/</g, '&lt;');
+
+function stat(k: string, v: string, tone = ''): string {
+  return `<div class="stat"><span class="k">${k}</span><span class="v ${tone}">${v}</span></div>`;
+}
+
+// ─── Menu / country select ───────────────────────────────────────────────────
+export function menuHTML(hasAuto: boolean): string {
+  const cards = COUNTRIES.map((c) => {
+    const s = c.start;
+    const pc = ((s.gdp * 1e9) / (s.population * 1e6)).toFixed(0);
+    return `<button class="country-card" data-action="pick" data-id="${c.id}">
+      <div class="cc-top"><span class="flag">${c.flag}</span><span class="cc-name">${c.nameZh}<small>${esc(c.name)}</small></span></div>
+      <div class="cc-blurb">${esc(c.blurbZh)}</div>
+      <div class="cc-stats">
+        <span>${GOV_LABELS[c.govType]}</span>
+        <span>GDP ${fmtMoneyShort(s.gdp)}</span>
+        <span>人口 ${fmtPop(s.population)}</span>
+        <span>人均 $${Number(pc).toLocaleString('en-US')}</span>
+        <span>债务 ${fmtPct(s.debtPctGdp, 0)}</span>
+      </div>
+    </button>`;
+  }).join('');
+
+  return `<div class="menu">
+    <header class="title-block">
+      <h1>Statecraft <span class="zh">庙堂</span></h1>
+      <p class="tagline">没有地图，没有图形。只有你、你的国家，和一个个艰难的决定。<br/>选择一个国家，逐年执政，看经济·人口·政治如何连锁回响。</p>
+    </header>
+    ${hasAuto ? `<button class="btn primary continue" data-action="continue">▸ 继续上次的存档</button>` : ''}
+    <h2 class="section-h">选择你要执掌的国家</h2>
+    <div class="country-grid">${cards}</div>
+  </div>`;
+}
+
+// ─── Dashboard (vitals grouped by system) ──────────────────────────────────────
+function tone3(v: number, warn: number, bad: number, invert = false): string {
+  const x = invert ? -v : v;
+  const w = invert ? -warn : warn;
+  const b = invert ? -bad : bad;
+  if (x <= b) return 'bad';
+  if (x <= w) return 'warn';
+  return 'good';
+}
+
+export function dashboardHTML(s: GameState): string {
+  const pc = (s.gdp * 1e9) / (s.population * 1e6);
+
+  const econ = [
+    stat('GDP（名义）', fmtMoney(s.gdp)),
+    stat('人均 GDP', `$${pc.toLocaleString('en-US', { maximumFractionDigits: 0 })}`),
+    stat('实际增长', fmtSigned(s.gdpGrowthReal), tone3(s.gdpGrowthReal, 0.005, 0)),
+    stat('通胀', fmtPct(s.inflation), tone3(Math.abs(s.inflation - 0.02), 0.04, 0.08, true)),
+    stat('失业率', fmtPct(s.unemployment), tone3(s.unemployment, 0.08, 0.12, true)),
+    stat('生产率指数', s.productivity.toFixed(2)),
+  ].join('');
+
+  const pop = [
+    stat('总人口', fmtPop(s.population)),
+    stat('人口增长', fmtSigned(s.popGrowth, 2)),
+    stat('年龄中位数', `${s.medianAge.toFixed(0)} 岁`),
+    stat('教育水平', `${s.educationLevel.toFixed(0)} / 100`),
+  ].join('');
+
+  const fiscal = [
+    stat('税收（占GDP）', fmtPct(s.taxRate, 0)),
+    stat('支出（占GDP）', fmtPct(s.spendingPctGdp, 0)),
+    stat('财政赤字', fmtSigned(-s.deficitPctGdp), tone3(s.deficitPctGdp, 0.04, 0.08, true)),
+    stat('公共债务', fmtPct(s.debtPctGdp, 0), tone3(s.debtPctGdp, 0.9, 1.6, true)),
+    stat('信用评级', ratingLabel(s.creditRating), tone3(s.creditRating, 12, 6)),
+    stat('储备', fmtMoney(s.reserves), tone3(s.reserves, 1, -0.0001)),
+  ].join('');
+
+  const politics = [
+    stat('支持率', s.approval.toFixed(0), tone3(s.approval, 45, 35)),
+    stat('稳定度', s.stability.toFixed(0), tone3(s.stability, 50, 30)),
+    stat('社会动荡', s.unrest.toFixed(0), tone3(s.unrest, 45, 70, true)),
+    stat('政体', GOV_LABELS[s.govType]),
+    ...(s.govType === 'democracy' ? [stat('距下次大选', `${Math.max(0, s.termYearsLeft)} 年`)] : []),
+  ].join('');
+
+  const brief = briefings(s)
+    .map((b) => `<li class="brief ${b.tone}"><span class="who">${b.who}</span>${esc(b.msg)}</li>`)
+    .join('');
+
+  return `<div class="dashboard">
+    <div class="vitals">
+      <section class="group"><h3>经济</h3>${econ}</section>
+      <section class="group"><h3>人口</h3>${pop}</section>
+      <section class="group"><h3>财政</h3>${fiscal}</section>
+      <section class="group"><h3>政治</h3>${politics}</section>
+    </div>
+    <section class="briefings"><h3>内阁简报</h3><ul>${brief}</ul></section>
+  </div>`;
+}
+
+// ─── Decisions panel ───────────────────────────────────────────────────────────
+function slider(id: string, min: number, max: number, step: number, val: number): string {
+  return `<input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" />`;
+}
+
+export function decisionsHTML(s: GameState, pendingAlloc: Allocation, pendingPolicies: string[]): string {
+  const allocSliders = SPEND_CATEGORIES.map((c: SpendCategory) => {
+    const raw = Math.round((pendingAlloc[c] ?? 0) * 1000);
+    return `<div class="alloc-row" data-cat="${c}">
+      <label>${SPEND_LABELS[c]}</label>
+      ${slider(`alloc-${c}`, 0, 1000, 1, raw)}
+      <span class="alloc-pct" id="allocpct-${c}">0%</span>
+    </div>`;
+  }).join('');
+
+  const policyBtns = POLICIES.map((p) => {
+    const avail = p.available(s);
+    const on = pendingPolicies.includes(p.id);
+    return `<button class="policy ${on ? 'on' : ''}" data-action="policy" data-id="${p.id}" ${avail ? '' : 'disabled'} title="${esc(p.descZh)}">
+      ${on ? '✓ ' : ''}${esc(p.nameZh)}<small>${esc(p.descZh)}</small>
+    </button>`;
+  }).join('');
+
+  return `<div class="decisions">
+    <h3>本年决策</h3>
+    <div class="lever">
+      <label>税收强度 <span id="taxval">${fmtPct(s.taxRate, 0)}</span></label>
+      ${slider('tax', 10, 60, 1, Math.round(s.taxRate * 100))}
+      <small>越高，财政收入越多，但过高（>52%）会拖累增长与征收效率。</small>
+    </div>
+    <div class="lever">
+      <label>支出规模（占GDP） <span id="spendval">${fmtPct(s.spendingPctGdp, 0)}</span></label>
+      ${slider('spend', 10, 70, 1, Math.round(s.spendingPctGdp * 100))}
+      <small>支出 − 收入 = 赤字；赤字推高债务与利息。</small>
+    </div>
+    <div class="alloc">
+      <label>预算分配 <small>（自动归一化为 100%）</small></label>
+      ${allocSliders}
+    </div>
+    <div class="policies"><label>政策</label><div class="policy-grid">${policyBtns}</div></div>
+    <button class="btn primary advance" data-action="advance">推进一年 ▸ ${s.year + 1}</button>
+  </div>`;
+}
+
+// ─── Event modal ────────────────────────────────────────────────────────────────
+export function eventModalHTML(s: GameState): string {
+  if (!s.pendingEventId) return '';
+  const ev = getEvent(s.pendingEventId);
+  if (!ev) return '';
+  const opts = ev.options
+    .map((o, i) => `<button class="btn opt" data-action="resolve" data-opt="${i}">${esc(o.labelZh)}</button>`)
+    .join('');
+  return `<div class="modal-backdrop"><div class="modal">
+    <h2>⚡ ${esc(ev.titleZh)}</h2>
+    <p>${esc(ev.descZh)}</p>
+    <div class="opts">${opts}</div>
+  </div></div>`;
+}
+
+// ─── Year report (log) ───────────────────────────────────────────────────────────
+export function reportHTML(s: GameState): string {
+  if (s.turn === 0 && s.log.length === 0) {
+    const c = getCountry(s.countryId);
+    return `<div class="report"><h3>${c.flag} ${c.nameZh} · ${s.year} 年</h3>
+      <p class="muted">你接掌了国家。审视各项体征，做出本年的决策，然后推进一年。</p></div>`;
+  }
+  const items = s.log.length
+    ? s.log.map((l) => `<li class="log ${l.kind}">${esc(l.msg)}</li>`).join('')
+    : '<li class="log info muted">这一年平稳度过，无特别事件。</li>';
+  return `<div class="report"><h3>${s.year} 年纪要</h3><ul>${items}</ul></div>`;
+}
+
+// ─── End screen ──────────────────────────────────────────────────────────────────
+export function endHTML(s: GameState): string {
+  const c = getCountry(s.countryId);
+  const titles: Record<string, string> = {
+    bankrupt: '💥 国家破产',
+    revolution: '🔥 政权倾覆',
+    voted_out: '🗳️ 黯然下台',
+    ended: '🏁 任期落幕',
+  };
+  const title = titles[s.status] ?? '游戏结束';
+  return `<div class="end">
+    <h1>${title}</h1>
+    <p class="epitaph">${esc(s.endReason ?? '')}</p>
+    <div class="final-score">最终治国评分 <b>${s.score.toFixed(0)}</b><span>/ 100</span></div>
+    <div class="end-recap">
+      ${stat('国家', `${c.flag} ${c.nameZh}`)}
+      ${stat('执政至', `${s.year} 年`)}
+      ${stat('人均GDP', `$${((s.gdp * 1e9) / (s.population * 1e6)).toLocaleString('en-US', { maximumFractionDigits: 0 })}`)}
+      ${stat('公共债务', fmtPct(s.debtPctGdp, 0))}
+      ${stat('支持率', s.approval.toFixed(0))}
+    </div>
+    <button class="btn primary" data-action="menu">↺ 再来一局</button>
+  </div>`;
+}
