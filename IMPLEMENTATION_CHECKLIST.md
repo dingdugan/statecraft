@@ -31,9 +31,9 @@
 - [x] v2.4 事件库扩充：8 → 34 事件(经济/政治/外交/灾害/社会/科技/军事)；多回合事件链(chainQueue: banking_crisis→bailout_aftermath、corruption_scandal→investigation_result)；世界事件(WORLD_EVENTS 6 个，advanceWorld ~14%/年波及全 16 国 + world.news 头条)
       验收: 平衡 sim(12世界×40年) 真崩溃=0、世界事件 avg 3/世界、玩家 ~11 事件/局；浏览器 modal 渲染新事件「外资涌入」+2选项；tsc 干净 21/21 测试绿
       证据: src/data/events.ts(EVENTS 34 + WORLD_EVENTS + chain/randomRel)；types.ts+index.ts(chainQueue)；reducers/events.ts(maybeFireEvent 链触发)；world.ts(stepWorldEvent)；save.ts(chainQueue backfill)；events.test.ts (a)(b)(c) + world.test.ts (i)
-- [ ] v2.5 主动行动系统：politicalCapital + 外交/军事/国内行动库 + UI 行动面板
-      验收: 每回合可执行跨系统行动并见后果；浏览器验证
-      证据: <截图>
+- [x] v2.5 主动行动系统：politicalCapital(每回合按 approval+stability 产出，上限30) + 9 行动库(外交:示好/制裁/调解；军事:动员/宣战/求和；国内:宣传/整肃/改革) + UI 行动面板(成本徽章/分类色/前置置灰)
+      验收: 浏览器跑到 2029，面板渲染 9 行动、政治资本 5→21、选「舆论宣传」(成本3)、推进后 21→24(花费+产出)；tsc 干净 25/25 测试绿
+      证据: src/data/actions.ts(ACTIONS 9 + getAction)；types.ts(politicalCapital/actions)；reducers/decisions.ts(花资本+产出)；save.ts(backfill)；view.ts+main.ts+style.css(行动面板)；actions.test.ts (a)(b)(c)(d)
 - [ ] v2.6 叙事层：手写模板文字后果 + 年报→编年史 + 重大时刻历史卡片
       验收: 政策/行动/事件/里程碑带文字叙事；年报成叙述；浏览器验证
       证据: <截图>

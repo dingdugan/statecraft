@@ -149,6 +149,19 @@ input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
 .policy.on { border-color: var(--gold); background: #2a2412; }
 .policy.used { opacity: .5; border-style: dashed; }
 .policy[disabled] { opacity: .4; cursor: not-allowed; }
+.actions-panel { margin-bottom: 14px; }
+.actions-panel > label { display: block; font-size: 13px; color: var(--ink); margin-bottom: 4px; font-weight: 600; }
+.actions-panel .pc { color: var(--gold); font-size: 14px; }
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.action { position: relative; text-align: left; display: flex; flex-direction: column; background: var(--bg-2); border: 1px solid var(--line); border-left-width: 3px; color: var(--ink); border-radius: 8px; padding: 8px 26px 8px 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.action small { font-size: 11px; margin-top: 3px; font-weight: 400; color: var(--ink-dim); }
+.action:hover:not([disabled]) { border-color: var(--accent); }
+.action.on { border-color: var(--gold); background: #2a2412; }
+.action[disabled] { opacity: .4; cursor: not-allowed; }
+.action .acost { position: absolute; top: 8px; right: 9px; font-size: 11px; color: var(--gold); font-weight: 700; }
+.action.diplo { border-left-color: var(--good); }
+.action.military { border-left-color: var(--bad); }
+.action.domestic { border-left-color: var(--accent); }
 .advance { width: 100%; margin-top: 4px; font-size: 16px; }
 
 /* ── report / log ──────────────────────────────────────────── */

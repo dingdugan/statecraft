@@ -3,6 +3,7 @@ import type { WorldState } from '../engine/world';
 import { COUNTRIES, getCountry } from '../data/countries';
 import { getEvent } from '../data/events';
 import { POLICIES } from '../data/policies';
+import { ACTIONS, getAction } from '../data/actions';
 import { SCENARIOS } from '../data/scenarios';
 import { SPEND_CATEGORIES } from '../engine/util';
 import {
@@ -167,6 +168,7 @@ export function decisionsHTML(
   pendingSpend: number,
   pendingAlloc: Allocation,
   pendingPolicies: string[],
+  pendingActions: string[],
 ): string {
   const allocSliders = SPEND_CATEGORIES.map((c: SpendCategory) => {
     const raw = Math.round((pendingAlloc[c] ?? 0) * 1000);
@@ -183,6 +185,15 @@ export function decisionsHTML(
     const on = pendingPolicies.includes(p.id);
     return `<button class="policy ${on ? 'on' : ''} ${used ? 'used' : ''}" data-action="policy" data-id="${p.id}" ${avail ? '' : 'disabled'} title="${esc(p.descZh)}">
       ${used ? '✓已实施 ' : on ? '✓ ' : ''}${esc(p.nameZh)}<small>${esc(p.descZh)}</small>
+    </button>`;
+  }).join('');
+
+  const selectedCost = pendingActions.reduce((sum, id) => sum + (getAction(id)?.cost ?? 0), 0);
+  const actionBtns = ACTIONS.map((a) => {
+    const on = pendingActions.includes(a.id);
+    const dis = !a.available(s) || (!on && selectedCost + a.cost > s.politicalCapital);
+    return `<button class="action ${a.category} ${on ? 'on' : ''}" data-action="action" data-id="${a.id}" ${dis ? 'disabled' : ''} title="${esc(a.descZh)}">
+      ${on ? '✓ ' : ''}${esc(a.labelZh)} <span class="acost">${a.cost}⚙</span><small>${esc(a.descZh)}</small>
     </button>`;
   }).join('');
 
@@ -203,6 +214,7 @@ export function decisionsHTML(
       ${allocSliders}
     </div>
     <div class="policies"><label>政策</label><div class="policy-grid">${policyBtns}</div></div>
+    <div class="actions-panel"><label>主动行动 <small>政治资本 <b class="pc">${s.politicalCapital.toFixed(0)}</b> · 本回合已用 ${selectedCost}⚙</small></label><div class="action-grid">${actionBtns}</div></div>
     <button class="btn primary advance" data-action="advance">推进一年 ▸ ${s.year + 1}</button>
   </div>`;
 }

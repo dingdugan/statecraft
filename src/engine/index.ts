@@ -49,6 +49,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
     unrest: 0,
     termYearsLeft: c.govType === 'democracy' ? C.TERM_LENGTH : 0,
     lowStabilityStreak: 0,
+    politicalCapital: 5,
 
     militaryStrength: st.militaryStrength,
     militaryReadiness: st.militaryReadiness,

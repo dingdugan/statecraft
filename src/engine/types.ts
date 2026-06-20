@@ -63,6 +63,7 @@ export interface GameState {
   unrest: number; // 0..100 accumulator
   termYearsLeft: number; // democracies only
   lowStabilityStreak: number; // consecutive turns at stability <= 5
+  politicalCapital: number; // 0..30, spent on active actions; accrues from approval + stability
 
   // military
   militaryStrength: number; // 0..100 index (funding + tech + manpower)
@@ -117,6 +118,7 @@ export interface PendingDecisions {
   spendingPctGdp?: number;
   allocation?: Allocation;
   enactPolicyIds?: string[];
+  actions?: string[]; // active-action ids the player spends political capital on this turn
 }
 
 export interface CountryStart {

@@ -19,6 +19,7 @@ interface App {
   pendingPolicies: string[];
   selectedScenario: string;
   view: 'home' | 'world';
+  pendingActions: string[];
 }
 
 const esc = (x: string) => x.replace(/</g, '&lt;');
@@ -36,6 +37,7 @@ const app: App = {
   pendingPolicies: [],
   selectedScenario: 'standard',
   view: 'home',
+  pendingActions: [],
 };
 
 const root = document.getElementById('app')!;
@@ -50,6 +52,7 @@ function syncPendingFromGame(g: GameState): void {
   app.pendingTax = g.taxRate;
   app.pendingSpend = g.spendingPctGdp;
   app.pendingPolicies = [];
+  app.pendingActions = [];
 }
 
 // ─── transitions ───────────────────────────────────────────────────────────────
@@ -82,6 +85,7 @@ function doAdvance(): void {
     spendingPctGdp: app.pendingSpend,
     allocation: normalizeAllocation(app.pendingAlloc),
     enactPolicyIds: app.pendingPolicies,
+    actions: app.pendingActions,
   };
   app.world = advanceWorld(app.world, decisions);
   autoSave(app.world);
@@ -105,6 +109,13 @@ function togglePolicy(id: string): void {
   const i = app.pendingPolicies.indexOf(id);
   if (i >= 0) app.pendingPolicies.splice(i, 1);
   else app.pendingPolicies.push(id);
+  render();
+}
+
+function toggleAction(id: string): void {
+  const i = app.pendingActions.indexOf(id);
+  if (i >= 0) app.pendingActions.splice(i, 1);
+  else app.pendingActions.push(id);
   render();
 }
 
@@ -151,7 +162,7 @@ function render(): void {
       ${headerHTML(g)}
       <div class="cols">
         <div class="left">${tabs}${leftMain}</div>
-        <div class="right">${decisionsHTML(g, app.pendingTax, app.pendingSpend, app.pendingAlloc, app.pendingPolicies)}${saveBarHTML()}</div>
+        <div class="right">${decisionsHTML(g, app.pendingTax, app.pendingSpend, app.pendingAlloc, app.pendingPolicies, app.pendingActions)}${saveBarHTML()}</div>
       </div>
     </div>
     ${eventModalHTML(g)}`;
@@ -205,6 +216,7 @@ root.addEventListener('click', (e) => {
     case 'advance': doAdvance(); break;
     case 'resolve': doResolve(Number(t.dataset.opt)); break;
     case 'policy': togglePolicy(t.dataset.id!); break;
+    case 'action': toggleAction(t.dataset.id!); break;
     case 'menu': app.screen = 'menu'; render(); break;
     case 'save': if (app.world) { saveSlot(slot, app.world); render(); } break;
     case 'load': {

@@ -3,6 +3,7 @@ import type { StepContext } from '../context';
 import { TAX_MIN, TAX_MAX, SPEND_MIN, SPEND_MAX } from '../constants';
 import { clamp, normalizeAllocation } from '../util';
 import { POLICIES } from '../../data/policies';
+import { getAction } from '../../data/actions';
 
 /** Apply the player's pending decisions (levers + enacted policies). Runs first. */
 export function applyDecisions(s: GameState, ctx: StepContext): GameState {
@@ -20,5 +21,17 @@ export function applyDecisions(s: GameState, ctx: StepContext): GameState {
       ctx.log.push({ kind: 'info', msg: `政策：${p.nameZh}` });
     }
   }
+  // active actions (v2.5): spend political capital on proactive diplomatic/military/domestic moves
+  if (d.actions) {
+    for (const id of d.actions) {
+      const a = getAction(id);
+      if (!a || !a.available(s) || s.politicalCapital < a.cost) continue;
+      s.politicalCapital -= a.cost;
+      a.apply(s, ctx);
+      ctx.log.push({ kind: 'politics', msg: `行动：${a.labelZh}` });
+    }
+  }
+  // accrue political capital for next turn (from approval + stability), capped
+  s.politicalCapital = clamp(s.politicalCapital + s.approval / 22 + s.stability / 28, 0, 30);
   return s;
 }
