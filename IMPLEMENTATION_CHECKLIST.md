@@ -34,9 +34,9 @@
 - [x] v2.5 主动行动系统：politicalCapital(每回合按 approval+stability 产出，上限30) + 9 行动库(外交:示好/制裁/调解；军事:动员/宣战/求和；国内:宣传/整肃/改革) + UI 行动面板(成本徽章/分类色/前置置灰)
       验收: 浏览器跑到 2029，面板渲染 9 行动、政治资本 5→21、选「舆论宣传」(成本3)、推进后 21→24(花费+产出)；tsc 干净 25/25 测试绿
       证据: src/data/actions.ts(ACTIONS 9 + getAction)；types.ts(politicalCapital/actions)；reducers/decisions.ts(花资本+产出)；save.ts(backfill)；view.ts+main.ts+style.css(行动面板)；actions.test.ts (a)(b)(c)(d)
-- [ ] v2.6 叙事层：手写模板文字后果 + 年报→编年史 + 重大时刻历史卡片
-      验收: 政策/行动/事件/里程碑带文字叙事；年报成叙述；浏览器验证
-      证据: <截图>
+- [x] v2.6 叙事层：年度叙事句(📜 按增长/通胀/支持/动荡/战争/债务生成) 入年报；一次性里程碑(首战/评分70·85/债务破百/动荡临界/科技前沿/繁荣顶尖/政变阴云) 入编年史(带年份) + UI 编年史面板
+      验收: 浏览器跑到 2029，年报显示「📜 政府广受拥戴」、编年史显示「2025 ⭐ 治国评分首次站上 70」「🌟 繁荣顶尖」；tsc 干净 28/28 测试绿
+      证据: src/engine/reducers/narrative.ts(stepNarrative/yearNarrative/MILESTONES)；types.ts(ChronicleEntry/chronicle)；advanceTurn.ts(接入)；save.ts(backfill)；view.ts+main.ts(chronicleHTML)；narrative.test.ts (a)(b)(c)
 - [ ] （并入 v2.5/平衡）让强国也需主动经营：当前强国可较被动夺胜，靠世界压力+行动成本提升维持难度
 
 ## Done

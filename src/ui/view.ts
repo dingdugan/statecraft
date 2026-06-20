@@ -247,6 +247,17 @@ export function reportHTML(s: GameState): string {
   return `<div class="report"><h3>${s.year} 年纪要</h3><ul>${items}</ul></div>`;
 }
 
+// ─── Chronicle (v2.6 narrative layer) ─────────────────────────────────────────────
+export function chronicleHTML(s: GameState): string {
+  if (!s.chronicle.length) return '';
+  const items = s.chronicle
+    .slice()
+    .reverse()
+    .map((c) => `<li class="chron"><span class="cyr">${c.year}</span><span class="ctxt">${esc(c.text)}</span></li>`)
+    .join('');
+  return `<div class="chronicle"><h3>📜 编年史</h3><ul>${items}</ul></div>`;
+}
+
 // ─── End screen ──────────────────────────────────────────────────────────────────
 export function endHTML(s: GameState): string {
   const c = getCountry(s.countryId);

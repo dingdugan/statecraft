@@ -20,6 +20,13 @@ export interface LogEntry {
   msg: string;
 }
 
+/** A milestone recorded in the running chronicle (narrative layer, v2.6). */
+export interface ChronicleEntry {
+  year: number;
+  text: string;
+  id: string; // unique milestone id; one entry per id per game
+}
+
 /** The complete, serializable game state. The RNG lives inside it, so a JSON
  *  round-trip is bit-identical — that is how save/reload determinism is guaranteed. */
 export interface GameState {
@@ -108,6 +115,7 @@ export interface GameState {
   usedEventIds: string[];
   usedPolicyIds: string[];
   chainQueue: { eventId: string; turnsLeft: number }[]; // scheduled follow-up (chained) events
+  chronicle: ChronicleEntry[]; // milestone history (narrative layer)
 
   // transient (deterministic) — the most recent turn's explanation log
   log: LogEntry[];

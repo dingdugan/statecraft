@@ -14,6 +14,7 @@ import { stepMilitary } from './reducers/military';
 import { stepWar } from './reducers/war';
 import { stepScore } from './reducers/score';
 import { maybeFireEvent } from './reducers/events';
+import { stepNarrative } from './reducers/narrative';
 import { checkFailStates } from './failStates';
 
 /** Advance one year. Pure: clones, threads a single RNG through reducers in fixed
@@ -38,6 +39,7 @@ export function advanceTurn(state: GameState, decisions: PendingDecisions = {}):
   stepMilitary(s, ctx);
   stepWar(s, ctx);
   stepScore(s, ctx);
+  stepNarrative(s, ctx);
   maybeFireEvent(s, ctx);
   checkFailStates(s, ctx);
 

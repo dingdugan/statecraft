@@ -6,7 +6,7 @@ import { getCountry } from './data/countries';
 import { GOV_LABELS } from './ui/format';
 import { autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS } from './ui/saveLoad';
 import {
-  menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML, worldViewHTML,
+  menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML, worldViewHTML, chronicleHTML,
 } from './ui/view';
 
 type Screen = 'menu' | 'play' | 'end';
@@ -157,7 +157,7 @@ function render(): void {
     <button class="tab ${app.view === 'home' ? 'on' : ''}" data-action="view" data-view="home">本国</button>
     <button class="tab ${app.view === 'world' ? 'on' : ''}" data-action="view" data-view="world">世界</button>
   </div>`;
-  const leftMain = app.view === 'world' ? worldViewHTML(app.world!) : `${dashboardHTML(g)}${reportHTML(g)}`;
+  const leftMain = app.view === 'world' ? worldViewHTML(app.world!) : `${dashboardHTML(g)}${reportHTML(g)}${chronicleHTML(g)}`;
   root.innerHTML = `<div class="play">
       ${headerHTML(g)}
       <div class="cols">

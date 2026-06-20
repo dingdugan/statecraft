@@ -163,6 +163,13 @@ input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
 .action.military { border-left-color: var(--bad); }
 .action.domestic { border-left-color: var(--accent); }
 .advance { width: 100%; margin-top: 4px; font-size: 16px; }
+.chronicle { margin-top: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.chronicle h3 { margin-bottom: 8px; }
+.chronicle ul { list-style: none; margin: 0; padding: 0; }
+.chron { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px dashed #223052; font-size: 13px; }
+.chron:last-child { border-bottom: none; }
+.cyr { color: var(--gold); font-family: var(--mono); font-weight: 700; flex-shrink: 0; }
+.ctxt { color: var(--ink-dim); }
 
 /* ── report / log ──────────────────────────────────────────── */
 .report ul { list-style: none; margin: 0; padding: 0; }
