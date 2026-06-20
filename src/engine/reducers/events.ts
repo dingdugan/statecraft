@@ -8,6 +8,21 @@ import { checkFailStates } from '../failStates';
 /** Select at most one eligible event per turn and mark it pending for the UI. */
 export function maybeFireEvent(s: GameState, ctx: StepContext): GameState {
   if (s.status !== 'playing' || s.pendingEventId) return s;
+  // chained follow-ups: tick the queue down; a due one fires unconditionally (it was
+  // scheduled by an earlier choice), bypassing condition() + EVENT_CHANCE.
+  if (s.chainQueue.length) {
+    for (const item of s.chainQueue) item.turnsLeft--;
+    const dueIdx = s.chainQueue.findIndex((i) => i.turnsLeft <= 0);
+    if (dueIdx >= 0) {
+      const [due] = s.chainQueue.splice(dueIdx, 1);
+      const ce = getEvent(due.eventId);
+      if (ce) {
+        s.pendingEventId = ce.id;
+        ctx.log.push({ kind: 'event', msg: `⚡ 事件：${ce.titleZh}` });
+        return s;
+      }
+    }
+  }
   const eligible = EVENTS.filter(
     (e) => (!e.oncePerGame || !s.usedEventIds.includes(e.id)) && e.condition(s),
   );

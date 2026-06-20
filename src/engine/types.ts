@@ -106,6 +106,7 @@ export interface GameState {
   pendingEventId?: string;
   usedEventIds: string[];
   usedPolicyIds: string[];
+  chainQueue: { eventId: string; turnsLeft: number }[]; // scheduled follow-up (chained) events
 
   // transient (deterministic) — the most recent turn's explanation log
   log: LogEntry[];

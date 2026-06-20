@@ -22,6 +22,7 @@ export function deserialize(str: string): GameState | null {
       if (typeof o.deficitPctGdp !== 'number') o.deficitPctGdp = 0;
       o.usedEventIds ??= [];
       o.usedPolicyIds ??= [];
+      if (!Array.isArray(o.chainQueue)) o.chainQueue = [];
       o.log ??= [];
       // numeric fields added by later system iterations — default to prevent NaN on old saves
       if (typeof o.inequality !== 'number') o.inequality = 0.4;

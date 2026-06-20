@@ -28,9 +28,9 @@
 - [x] v2.3 AI 完善 + 国家间真交互：aiDecide 理性财政启发式(衰退刺激/通胀赤字紧缩/可持续收敛)；WorldState.rng + stepWorldRelations(每年外交漂移 + 偶发爆发点危机压破 −75 战争线) → NPC 彼此开战(worldSync 双向卷入)；genNews 结盟/交恶
       验收: 平衡 sim(12世界×16国×40年) 真崩溃=0、宣战=28(avg 2.3/世界)；浏览器跑16年→2041 世界面板显示 🇰🇷⚔️🇧🇷、关系游走；tsc 干净 17/17 测试绿
       证据: src/engine/ai.ts(aiDecide)；world.ts(stepWorldRelations/genNews)；index.ts(newWorld rng)；save.ts(deserializeWorld/worldFingerprint rng)；world.test.ts 测试 (g) dynamic-but-not-degenerate + (h) wars ignite
-- [ ] v2.4 事件库扩充：~8 → 几十，分类 + 多回合事件链 + 世界事件(影响多国)
-      验收: 事件多样、可触发链、世界事件波及多国
-      证据: <file:line + 测试>
+- [x] v2.4 事件库扩充：8 → 34 事件(经济/政治/外交/灾害/社会/科技/军事)；多回合事件链(chainQueue: banking_crisis→bailout_aftermath、corruption_scandal→investigation_result)；世界事件(WORLD_EVENTS 6 个，advanceWorld ~14%/年波及全 16 国 + world.news 头条)
+      验收: 平衡 sim(12世界×40年) 真崩溃=0、世界事件 avg 3/世界、玩家 ~11 事件/局；浏览器 modal 渲染新事件「外资涌入」+2选项；tsc 干净 21/21 测试绿
+      证据: src/data/events.ts(EVENTS 34 + WORLD_EVENTS + chain/randomRel)；types.ts+index.ts(chainQueue)；reducers/events.ts(maybeFireEvent 链触发)；world.ts(stepWorldEvent)；save.ts(chainQueue backfill)；events.test.ts (a)(b)(c) + world.test.ts (i)
 - [ ] v2.5 主动行动系统：politicalCapital + 外交/军事/国内行动库 + UI 行动面板
       验收: 每回合可执行跨系统行动并见后果；浏览器验证
       证据: <截图>

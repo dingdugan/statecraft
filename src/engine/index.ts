@@ -84,6 +84,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
 
     usedEventIds: [],
     usedPolicyIds: [],
+    chainQueue: [],
     log: [],
   };
   computeResources(s);

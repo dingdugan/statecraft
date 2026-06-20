@@ -9,6 +9,7 @@ import { Rng } from './rng';
 import { clamp } from './util';
 import { aiDecide } from './ai';
 import { COUNTRY_IDS, getCountry } from '../data/countries';
+import { WORLD_EVENTS } from '../data/events';
 
 export interface NewsItem {
   kind: 'econ' | 'war' | 'diplo' | 'politics' | 'disaster';
@@ -58,9 +59,23 @@ export function advanceWorld(world: WorldState, playerDecisions: PendingDecision
   };
   worldSync(w);
   stepWorldRelations(w, wrng); // world-level diplomacy drift (can sour into war / warm into alliance)
+  const worldEvent = stepWorldEvent(w, wrng); // occasional global shock hitting every country
   w.rng = wrng.state;
   w.news = genNews(before, w.countries, w.playerId);
+  if (worldEvent) w.news.unshift(worldEvent);
   return w;
+}
+
+/** Occasional global shock applied to every playing country (pandemic, financial crisis,
+ *  tech leap, energy crisis, boom, climate). Returns a headline for world.news, or null. */
+function stepWorldEvent(w: WorldState, rng: Rng): NewsItem | null {
+  if (rng.next() > 0.14) return null; // ~14%/yr a global event strikes
+  const ev = rng.pick(WORLD_EVENTS, WORLD_EVENTS.map((e) => e.weight));
+  for (const id of COUNTRY_IDS) {
+    const cs = w.countries[id];
+    if (cs && cs.status === 'playing') ev.apply(cs);
+  }
+  return { kind: ev.kind, who: 'world', msg: ev.newsZh };
 }
 
 /** Reconcile relations (make A↔B symmetric) and wars (pull both sides into a conflict). */
