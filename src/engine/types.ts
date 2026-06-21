@@ -111,6 +111,7 @@ export interface GameState {
   victoryStreak: number; // consecutive years at score >= 85 (for SUPERPOWER victory)
   mandateId: string; // the player's tenure objective (a goal lens, not simulated state)
   activeCrisis: { id: string; turnsLeft: number } | null; // counting-down threat to reverse (v3.1)
+  figures: PoliticalFigure[]; // domestic political cast (v4b) — named figures with loyalty
 
   // events / policies
   pendingEventId?: string;
@@ -121,6 +122,16 @@ export interface GameState {
 
   // transient (deterministic) — the most recent turn's explanation log
   log: LogEntry[];
+}
+
+/** A named domestic political figure (v4b) — the "who" the player contends with. */
+export interface PoliticalFigure {
+  id: string; // stable key within the game ('fig0'..)
+  nameZh: string;
+  title: string; // 头衔 e.g. 反对党领袖 / 军方统帅
+  stance: string; // 立场
+  personality: string; // 性格
+  loyalty: number; // -100..100 toward the player
 }
 
 export interface PendingDecisions {

@@ -9,6 +9,7 @@ import { getScenario } from '../data/scenarios';
 import { C } from './constants';
 import { COUNTRY_IDS } from '../data/countries';
 import { pickMandate } from '../data/mandates';
+import { generateFigures } from '../data/characters';
 import { advanceTurn } from './advanceTurn';
 import type { WorldState } from './world';
 import type { GameState, PendingDecisions } from './types';
@@ -86,6 +87,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
     victoryStreak: 0,
     mandateId: '',
     activeCrisis: null,
+    figures: [],
 
     usedEventIds: [],
     usedPolicyIds: [],
@@ -98,6 +100,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
   initRelations(s);
   computeScore(s);
   s.mandateId = pickMandate(s);
+  s.figures = generateFigures(s.countryId, seed);
   if (scenarioId !== 'standard') {
     getScenario(scenarioId).apply(s);
     computeDiplomacy(s);

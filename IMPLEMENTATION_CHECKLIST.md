@@ -58,7 +58,13 @@
       验收: 浏览器菜单全虚构名(北河联邦/东屿共和国…)、anyRealFlag=false；tsc 干净 37/37 测试绿、存档兼容(id 未变)
       证据: countries.ts(16国显示字段虚构化+架空声明注释)；UK/MX blurb 去脱欧/美国指代
 - [ ] v4a-docs 文档措辞扫尾：CLAUDE.md/spec/README 里「真实国家」→「架空世界」（与 v4b 一起）
-- [ ] v4b 政治人物系统：characters.ts 程序生成虚构政客(名/立场/性格随机) + 「政坛」面板 + 事件/危机绑人物 + 关系跌破临界触发戏剧行动(倒戈/发难/政变)
+- [x] v4b.1 人物模型+生成：GameState.figures(虚构政客 id/nameZh/title/stance/personality/loyalty −100..100) + characters.ts 确定性程序生成(每国 4-6 人，独立派生 rng 不碰主 rng，恒含反对党领袖+军方统帅，名字音节拼接)；newGame 生成 + deserialize backfill
+      验收: tsc 干净 39/39 测试绿(characters a 确定性+字段合法+有反对党&军方, b newGame 填充+各国 cast 不同)
+      证据: types.ts(PoliticalFigure+figures)；data/characters.ts(generateFigures)；index.ts(newGame 调用)；save.ts(backfill)；characters.test.ts (a)(b)
+- [ ] v4b.2 政坛面板 UI：figuresHTML(人物列表+头衔+对你忠诚/敌意标签) 接入本国视图
+- [ ] v4b.3 事件/危机绑人物（"财长X警告…""将军Y异动"，选择影响 loyalty）
+- [ ] v4b.4 戏剧行动（stepFigures：loyalty 跌破临界→倒戈/不信任投票/逼宫政变）
+- [ ] v4b.5 人物贯穿叙事 + 结局命运 + 编年史
 
 ## Done
 
