@@ -1,6 +1,6 @@
 # Statecraft / 庙堂 — 国家模拟游戏
 
-一个纯文字 + 数值的「文明系列」式国家模拟器：扮演真实国家的政府首脑，做真实的国家级别决策（预算 / 税收 / 政策 / 危机），逐年推进，看经济·人口·政治等互锁系统的连锁反应。无地图、无图形。Web 单页应用（TypeScript + Vite，无后端，localStorage 存档）。
+一个纯文字 + 数值的「文明系列」式国家模拟器：扮演**架空国家**的政府首脑，做真实质感的国家级别决策（预算 / 税收 / 政策 / 危机），逐年推进，看经济·人口·政治等互锁系统的连锁反应。无地图、无图形。Web 单页应用（TypeScript + Vite，无后端，localStorage 存档）。国家全部虚构（避免真实国家的政治敏感），但数值贴近真实量级骨架。
 
 > 本项目继承 `~/.claude/CLAUDE.md`（Execution Discipline + Plan→Code→Ship 工作流）。下面只补充本项目特有的规则。
 
@@ -76,7 +76,7 @@ updated: YYYY-MM-DD
 
 **架构（权威）:** 纯函数引擎 + 薄 UI。
 - `src/engine/` —— 无 DOM 的模拟引擎。单一 `GameState`；每个系统是 `step(state, ctx) → state` reducer；`advanceTurn` 按固定依赖顺序组合它们。种子化 RNG。100% 可单测。
-- `src/data/` —— `countries.ts`（带「approximate + baseline year」标注的真实国家数据）、`events.ts`、`policies.ts`。
+- `src/data/` —— `countries.ts`（16 个架空国家，数值贴近真实量级骨架、保留内部 id 作稳定键）、`characters.ts`（虚构政客程序生成）、`events.ts`、`policies.ts`、`mandates.ts`、`focuses.ts`。
 - `src/ui/` —— DOM 渲染，每回合整体重渲染（回合离散、用户触发，无需响应式框架）。
 - `src/main.ts` —— 装配、存档/读档、选国。
 
@@ -85,6 +85,6 @@ updated: YYYY-MM-DD
 - `npm run build` —— 产出静态 bundle
 - `npm test` —— Vitest 单测
 
-**数值现实性原则:** 国家起始数值是「真实量级的近似值」，baseline ≈ 2024，数据文件里每个数都标注 approximate + baseline year。不编造伪精确数字；具体数值的核实/精修在 overnight loop 里对照公开来源（World Bank / IMF WEO / SIPRI）逐步做。
+**数值现实性原则:** 国家是**架空的**（v4a 后），但起始数值贴近「真实量级的骨架」——每个架空国 loosely 对应某种现实原型的数量级（出口制造国 / 高债务老龄国 / 年轻石油国 等），baseline ≈ 2024 的世界质感。敏感的是「这是 X 国」的标签、不是数字本身；架空国名/旗/政客纯属虚构，数值只求量级可信，不编造伪精确数字。
 
 **深度优先 roadmap:** 见 spec 末尾。每轮迭代加一个系统（engine reducer + data + UI panel + tests + commit）。

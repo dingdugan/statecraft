@@ -57,7 +57,8 @@
 - [x] v4a 架空换皮：16 真实国→虚构国（保留内部 id + 全部数值，只换 name/nameZh/flag/blurb；真实国旗→象征 emoji）
       验收: 浏览器菜单全虚构名(北河联邦/东屿共和国…)、anyRealFlag=false；tsc 干净 37/37 测试绿、存档兼容(id 未变)
       证据: countries.ts(16国显示字段虚构化+架空声明注释)；UK/MX blurb 去脱欧/美国指代
-- [ ] v4a-docs 文档措辞扫尾：CLAUDE.md/spec/README 里「真实国家」→「架空世界」（与 v4b 一起）
+- [x] v4-docs 文档措辞扫尾：CLAUDE.md 3 处（项目简介/数据描述/数值现实性原则）「真实国家」→「架空国家（数值贴近真实量级骨架）」；spec/README 无「真实」措辞
+      证据: CLAUDE.md 行 3/79/88
 - [x] v4b.1 人物模型+生成：GameState.figures(虚构政客 id/nameZh/title/stance/personality/loyalty −100..100) + characters.ts 确定性程序生成(每国 4-6 人，独立派生 rng 不碰主 rng，恒含反对党领袖+军方统帅，名字音节拼接)；newGame 生成 + deserialize backfill
       验收: tsc 干净 39/39 测试绿(characters a 确定性+字段合法+有反对党&军方, b newGame 填充+各国 cast 不同)
       证据: types.ts(PoliticalFigure+figures)；data/characters.ts(generateFigures)；index.ts(newGame 调用)；save.ts(backfill)；characters.test.ts (a)(b)
