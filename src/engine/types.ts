@@ -132,6 +132,7 @@ export interface PoliticalFigure {
   stance: string; // 立场
   personality: string; // 性格
   loyalty: number; // -100..100 toward the player
+  acted?: boolean; // already staged a one-time drama (defection/no-confidence/coup) — won't repeat
 }
 
 export interface PendingDecisions {

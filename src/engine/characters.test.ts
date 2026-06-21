@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateFigures } from '../data/characters';
-import { newGame, newWorld } from './index';
+import { newGame, newWorld, advanceTurn } from './index';
 import { resolveEventChoice } from './reducers/events';
 
 describe('characters (a) deterministic generation', () => {
@@ -40,5 +40,20 @@ describe('characters (c) events shift a figure’s loyalty', () => {
   it('purging officers lowers the military chief; buying loyalty raises them', () => {
     expect(milLoyDelta(0)).toBeLessThan(0); // 清洗 → 记恨
     expect(milLoyDelta(1)).toBeGreaterThan(0); // 收买 → 领情
+  });
+});
+
+describe('characters (d) collapsed loyalty stages a one-time drama', () => {
+  it('a hostile military chief attempts a coup (coupRisk spikes), marked acted, no repeat', () => {
+    let s = newGame('DE', 5);
+    s.figures.find((f) => f.title === '军方统帅')!.loyalty = -80;
+    s = advanceTurn(s, {});
+    if (s.pendingEventId) s = resolveEventChoice(s, s.pendingEventId, 0);
+    const mil = s.figures.find((f) => f.title === '军方统帅')!;
+    expect(mil.acted).toBe(true);
+    expect(s.coupRisk).toBeGreaterThan(20);
+    // already acted → keeps the flag, no re-trigger crash
+    s = advanceTurn(s, {});
+    expect(s.figures.find((f) => f.title === '军方统帅')!.acted).toBe(true);
   });
 });

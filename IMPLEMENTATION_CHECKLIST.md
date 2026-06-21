@@ -67,7 +67,10 @@
 - [x] v4b.3 事件绑人物：figureByTitle helper；腐败丑闻(彻查→反对党领袖+8/财阀−10，压下→反对党−10)、政变传闻(清洗→军方统帅−15，收买→+12)，各 log 人名反应
       验收: tsc 干净 40/40 绿(characters c 清洗降/收买升军方忠诚)
       证据: characters.ts(figureByTitle)；events.ts(corruption_scandal+coup_rumor apply 改 loyalty+log 人名)；characters.test.ts (c)
-- [ ] v4b.4 戏剧行动（stepFigures：loyalty 跌破临界→倒戈/不信任投票/逼宫政变）
+- [x] v4b.4 戏剧行动：stepFigures(loyalty 随治理好坏漂移 + 跌破临界一次性触发)：军方统帅<−50 逼宫(coupRisk+30/stability−10)、反对党领袖<−55 不信任投票、财阀/媒体等<−25 倒戈；acted 防重复；log 点名
+      验收: tsc 干净 41/41 绿(characters d 军方崩→政变企图、acted)；平衡 sim(12世界×40年 volatile玩家) catastrophic=0、戏剧 7 次偶发
+      证据: reducers/figures.ts(stepFigures 漂移+戏剧)；types.ts(acted)；advanceTurn.ts(接入 stepCrisis 后)；characters.test.ts (d)
+- [ ] 遗留(非v4b·v3.1锅)：高债务 NPC 因债务危机倒计时超时破产(某seed批~17/192国，NPC aiDecide 不主动降债)；需让 aiDecide 危机时降支出降债
 - [ ] v4b.5 人物贯穿叙事 + 结局命运 + 编年史
 
 ## Done
