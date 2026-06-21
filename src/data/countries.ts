@@ -1,22 +1,16 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// COUNTRY DATA — reality-grounding policy (see global CLAUDE.md + spec §数据)
+// COUNTRY DATA — FICTIONAL nations (v4 架空世界).
 //
-// Baseline ≈ 2024. Figures are APPROXIMATE REAL-WORLD MAGNITUDES used for gameplay,
-// NOT precise statistics. Real relationships are preserved (China GDP ≈ $18.5T & pop
-// ≈ 1.41B; Japan debt ≈ 250% of GDP; Saudi/Nigeria oil reliance; Singapore modeled at
-// NET debt since its gross debt is offset by sovereign assets).
+// Every country here is invented. To keep gameplay believable, each one's numbers are
+// loosely calibrated to a real-world *archetype's* order of magnitude (a manufacturing
+// exporter, a debt-laden aging economy, a young oil state, a tiny rich trade hub, a
+// sanctioned petro-autocracy, …) — but the names, flags, and identities are pure
+// fiction. Nothing maps 1:1 to any real country, government, or person; the internal
+// `id` codes are just stable keys and are never shown to the player.
 //
-//   REAL-MAGNITUDE (order-of-magnitude grounded in World Bank / IMF WEO / SIPRI):
-//     gdp, population, popGrowth, medianAge, unemployment, inflation, debtPctGdp,
-//     sectors, taxRate (≈ revenue/GDP), spendingPctGdp, reserves, trendGrowth,
-//     inequality (≈ Gini coefficient)
-//   GAME PROXY / CALIBRATED (not a real poll or statistic — a starting position):
-//     approval, stability, educationLevel (0..100 index), healthIndex (0..100),
-//     laborParticipation, creditRating (0..20 game scale), allocation (budget tilt),
-//     productivity / techLevel (0.5..3 index), militaryStrength / militaryReadiness (0..100),
-//     resourceDepletion / climateStress (0..100 game indices)
-//
-// TODO(loop): verify/refine specific figures against named sources; expand 6 → ~16.
+// Field realism: gdp / population / debt / sectors / etc. are plausible magnitudes for
+// the archetype; approval / stability / creditRating / etc. are 0..100-ish game indices
+// (a starting position, not a real statistic).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { CountryDef } from '../engine/types';
@@ -24,9 +18,9 @@ import type { CountryDef } from '../engine/types';
 export const COUNTRIES: CountryDef[] = [
   {
     id: 'DE',
-    name: 'Germany',
-    nameZh: '德国',
-    flag: '🇩🇪',
+    name: 'Nordhavn Federation',
+    nameZh: '北河联邦',
+    flag: '🏭',
     govType: 'democracy',
     blurb: 'Export engine, low debt, but aging and recently stagnant.',
     blurbZh: '出口引擎、低负债，但人口老化、近年增长停滞。',
@@ -62,9 +56,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'JP',
-    name: 'Japan',
-    nameZh: '日本',
-    flag: '🇯🇵',
+    name: 'Higashima Republic',
+    nameZh: '东屿共和国',
+    flag: '🗼',
     govType: 'democracy',
     blurb: 'Rich and stable, but the heaviest public debt on Earth and aging hard.',
     blurbZh: '富裕稳定，却背着全球最重的公共债务，且老龄化严重。',
@@ -100,9 +94,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'NG',
-    name: 'Nigeria',
-    nameZh: '尼日利亚',
-    flag: '🇳🇬',
+    name: 'Zambria',
+    nameZh: '桑布里亚',
+    flag: '🛢️',
     govType: 'democracy',
     blurb: 'Huge young population, oil money, but high inflation and thin state revenue.',
     blurbZh: '庞大的年轻人口、石油收入，但高通胀、财政汲取能力薄弱。',
@@ -138,9 +132,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'SG',
-    name: 'Singapore',
-    nameZh: '新加坡',
-    flag: '🇸🇬',
+    name: 'Mingwan City-State',
+    nameZh: '明湾城邦',
+    flag: '🏙️',
     govType: 'hybrid',
     blurb: 'Tiny, ultra-rich trade hub with deep reserves and a dominant party.',
     blurbZh: '弹丸之地、极度富裕的贸易枢纽，储备深厚、一党长期主导。',
@@ -176,9 +170,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'SA',
-    name: 'Saudi Arabia',
-    nameZh: '沙特阿拉伯',
-    flag: '🇸🇦',
+    name: 'Kazran Kingdom',
+    nameZh: '卡兹兰王国',
+    flag: '🏜️',
     govType: 'monarchy',
     blurb: 'Oil monarchy with sovereign wealth, racing to diversify before the oil fades.',
     blurbZh: '石油君主国，坐拥主权基金，赶在石油退场前推动多元化。',
@@ -214,9 +208,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'CN',
-    name: 'China',
-    nameZh: '中国',
-    flag: '🇨🇳',
+    name: 'Songyue Union',
+    nameZh: '嵩岳联邦',
+    flag: '🏯',
     govType: 'authoritarian',
     blurb: 'Manufacturing giant with vast reserves, facing a demographic cliff.',
     blurbZh: '制造业巨人，坐拥庞大储备，但正迎来人口拐点。',
@@ -252,9 +246,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'US',
-    name: 'United States',
-    nameZh: '美国',
-    flag: '🇺🇸',
+    name: 'Atlica Federation',
+    nameZh: '阿提卡联邦',
+    flag: '🦅',
     govType: 'democracy',
     blurb: 'The incumbent superpower — vast and innovative, but polarized and deep in debt.',
     blurbZh: '在位的超级大国——庞大、创新，却政治极化、债台高筑。',
@@ -290,9 +284,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'IN',
-    name: 'India',
-    nameZh: '印度',
-    flag: '🇮🇳',
+    name: 'Satya Republic',
+    nameZh: '萨提亚共和国',
+    flag: '🪷',
     govType: 'democracy',
     blurb: 'A vast young democracy growing fast, straining infrastructure and institutions.',
     blurbZh: '庞大而年轻的民主国家，高速增长，却让基建与制度承压。',
@@ -328,12 +322,12 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'UK',
-    name: 'United Kingdom',
-    nameZh: '英国',
-    flag: '🇬🇧',
+    name: 'Glanmore',
+    nameZh: '格兰岛王国',
+    flag: '🏰',
     govType: 'democracy',
-    blurb: 'A services-and-finance economy finding its post-Brexit footing.',
-    blurbZh: '以服务与金融立国，正寻找脱欧之后的定位。',
+    blurb: 'A services-and-finance island economy finding its footing after a great schism.',
+    blurbZh: '以服务与金融立国的岛国，正寻找一场大分离之后的定位。',
     traits: ['cheap_debt'],
     trendGrowth: 0.012,
     start: {
@@ -366,9 +360,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'FR',
-    name: 'France',
-    nameZh: '法国',
-    flag: '🇫🇷',
+    name: 'Vairon Republic',
+    nameZh: '维朗共和国',
+    flag: '🏛️',
     govType: 'democracy',
     blurb: 'A strong-state social model with a heavy budget and restless streets.',
     blurbZh: '强国家干预的社会模式，预算沉重、街头不安。',
@@ -404,9 +398,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'BR',
-    name: 'Brazil',
-    nameZh: '巴西',
-    flag: '🇧🇷',
+    name: 'Serrana Federation',
+    nameZh: '塞拉纳联邦',
+    flag: '🌴',
     govType: 'democracy',
     blurb: 'Resource-rich and democratic, but unequal and fiscally stretched.',
     blurbZh: '资源富集的民主大国，却贫富悬殊、财政吃紧。',
@@ -442,9 +436,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'RU',
-    name: 'Russia',
-    nameZh: '俄罗斯',
-    flag: '🇷🇺',
+    name: 'Severia',
+    nameZh: '谢维利亚',
+    flag: '🐻',
     govType: 'authoritarian',
     blurb: 'A petro-state under sanctions — militarized and resource-dependent.',
     blurbZh: '受制裁的石油国家，军事化、依赖资源出口。',
@@ -480,9 +474,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'KR',
-    name: 'South Korea',
-    nameZh: '韩国',
-    flag: '🇰🇷',
+    name: 'Baeksan Republic',
+    nameZh: '白山共和国',
+    flag: '🏞️',
     govType: 'democracy',
     blurb: 'A tech-export powerhouse with the world’s lowest birthrate and a tense border.',
     blurbZh: '科技出口强国，却生育率全球最低、边境紧张。',
@@ -518,9 +512,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'ZA',
-    name: 'South Africa',
-    nameZh: '南非',
-    flag: '🇿🇦',
+    name: 'Karanga',
+    nameZh: '卡兰加共和国',
+    flag: '💎',
     govType: 'democracy',
     blurb: 'Mineral wealth shadowed by the world’s worst inequality and joblessness.',
     blurbZh: '矿产丰富，却笼罩在全球最严重的不平等与失业之下。',
@@ -556,9 +550,9 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'ID',
-    name: 'Indonesia',
-    nameZh: '印度尼西亚',
-    flag: '🇮🇩',
+    name: 'Kepula Federation',
+    nameZh: '千屿联邦',
+    flag: '🏝️',
     govType: 'democracy',
     blurb: 'A vast young archipelago riding a commodity-and-manufacturing boom.',
     blurbZh: '庞大而年轻的群岛之国，乘着大宗商品与制造业的东风。',
@@ -594,12 +588,12 @@ export const COUNTRIES: CountryDef[] = [
   },
   {
     id: 'MX',
-    name: 'Mexico',
-    nameZh: '墨西哥',
-    flag: '🇲🇽',
+    name: 'Coahua Republic',
+    nameZh: '科亚瓦共和国',
+    flag: '🌵',
     govType: 'democracy',
-    blurb: 'A manufacturing hub tied to the US, dogged by security and informality.',
-    blurbZh: '与美国深度绑定的制造业枢纽，受治安与非正规经济困扰。',
+    blurb: 'A manufacturing hub bound to its superpower neighbor, dogged by security and informality.',
+    blurbZh: '与北方超级大国深度绑定的制造业枢纽，受治安与非正规经济困扰。',
     traits: ['oil_exporter'],
     trendGrowth: 0.02,
     start: {

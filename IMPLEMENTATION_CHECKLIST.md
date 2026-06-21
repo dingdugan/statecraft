@@ -52,6 +52,14 @@
       验收: 浏览器 JP→「休养生息」+ hint「把支出压到税收以下…」；37/37 测试绿
       证据: mandates.ts(pickMandate债务优先+hintZh+green progress)；view.ts/style.css(m-hint)；preview.test.ts mandate(b) JP→deleverage+每使命有hint
 
+## v4 架空世界 + 政治人物（用户拍板：去真实国家避敏感 + 给游戏「人和故事」破闷）
+
+- [x] v4a 架空换皮：16 真实国→虚构国（保留内部 id + 全部数值，只换 name/nameZh/flag/blurb；真实国旗→象征 emoji）
+      验收: 浏览器菜单全虚构名(北河联邦/东屿共和国…)、anyRealFlag=false；tsc 干净 37/37 测试绿、存档兼容(id 未变)
+      证据: countries.ts(16国显示字段虚构化+架空声明注释)；UK/MX blurb 去脱欧/美国指代
+- [ ] v4a-docs 文档措辞扫尾：CLAUDE.md/spec/README 里「真实国家」→「架空世界」（与 v4b 一起）
+- [ ] v4b 政治人物系统：characters.ts 程序生成虚构政客(名/立场/性格随机) + 「政坛」面板 + 事件/危机绑人物 + 关系跌破临界触发戏剧行动(倒戈/发难/政变)
+
 ## Done
 
 ### 复盘 + 后续改进（review/QA 之后）
