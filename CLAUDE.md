@@ -68,6 +68,7 @@ updated: YYYY-MM-DD
 - [design-engine.md](docs/design-engine.md) — **构建契约（权威数值模型）**。`GameState` schema、各 reducer 的 v0 公式、`advanceTurn` 解算顺序、种子 RNG、信用评级/利率、破产/革命判定、计分、Policy/Event 类型与样例、模块图与测试门槛。写引擎代码信它。
 - [research-overnight-report.md](docs/research-overnight-report.md) — overnight LFG 构建报告：逐 commit 清单、系统全貌（11 系统）、测试/构建状态、遗留平衡项、后续建议。
 - [design-world-v2.md](docs/design-world-v2.md) — **v2 构建契约**。完整世界模拟（GameState 单国 → WorldState 重构）+ 世界反馈/事件扩充/主动行动/叙事层 4 系统 roadmap。可玩性大迭代信它。
+- [research-v4-report.md](docs/research-v4-report.md) — **v4 收官报告**。架空世界(16 虚构国) + 政治人物系统(生成/政坛/事件绑定/戏剧/贯穿)；各 commit、42 测试、遗留(NPC 债务/stance 多样性)。
 - [research-v2-report.md](docs/research-v2-report.md) — **v2 收官报告**。v2.1–v2.6 逐 commit、线上 URL、28/28 测试、平衡数据、遗留项。v2 全部落地后的总览。
 
 ## 项目特定上下文
