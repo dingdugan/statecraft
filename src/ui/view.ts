@@ -317,6 +317,24 @@ export function reportHTML(s: GameState): string {
 }
 
 // ─── Chronicle (v2.6 narrative layer) ─────────────────────────────────────────────
+// ─── Political cast panel (v4b.2) ──────────────────────────────────────────────────
+const LOYALTY_TIER = (l: number): string =>
+  l > 40 ? '盟友' : l > 10 ? '支持' : l > -25 ? '中立' : l > -50 ? '不满' : '敌对';
+
+export function figuresHTML(s: GameState): string {
+  if (!s.figures.length) return '';
+  const rows = s.figures
+    .map((f) => {
+      const tone = f.loyalty > 40 ? 'good' : f.loyalty < -25 ? 'bad' : '';
+      return `<li class="fig">
+      <span class="fig-id"><b>${esc(f.nameZh)}</b><small>${esc(f.title)} · ${esc(f.stance)} · ${esc(f.personality)}</small></span>
+      <span class="fig-loy ${tone}">${LOYALTY_TIER(f.loyalty)} ${f.loyalty.toFixed(0)}</span>
+    </li>`;
+    })
+    .join('');
+  return `<div class="figures"><h3>政坛</h3><ul>${rows}</ul></div>`;
+}
+
 export function chronicleHTML(s: GameState): string {
   if (!s.chronicle.length) return '';
   const items = s.chronicle

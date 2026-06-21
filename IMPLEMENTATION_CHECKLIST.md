@@ -61,7 +61,9 @@
 - [x] v4b.1 人物模型+生成：GameState.figures(虚构政客 id/nameZh/title/stance/personality/loyalty −100..100) + characters.ts 确定性程序生成(每国 4-6 人，独立派生 rng 不碰主 rng，恒含反对党领袖+军方统帅，名字音节拼接)；newGame 生成 + deserialize backfill
       验收: tsc 干净 39/39 测试绿(characters a 确定性+字段合法+有反对党&军方, b newGame 填充+各国 cast 不同)
       证据: types.ts(PoliticalFigure+figures)；data/characters.ts(generateFigures)；index.ts(newGame 调用)；save.ts(backfill)；characters.test.ts (a)(b)
-- [ ] v4b.2 政坛面板 UI：figuresHTML(人物列表+头衔+对你忠诚/敌意标签) 接入本国视图
+- [x] v4b.2 政坛面板 UI：figuresHTML(人物列表:名+头衔+立场+性格+对你忠诚标签 盟友/支持/中立/不满/敌对) 接入本国视图
+      验收: 浏览器北河联邦显示 5 政客(穆文澜·反对党领袖·不满−38 / 沈谌·军方统帅·支持13 / 林安伦·媒体大亨·盟友42…)；tsc 干净 39/39 绿
+      证据: view.ts(figuresHTML+LOYALTY_TIER)；main.ts(接入 leftMain)；style.css(.figures/.fig)
 - [ ] v4b.3 事件/危机绑人物（"财长X警告…""将军Y异动"，选择影响 loyalty）
 - [ ] v4b.4 戏剧行动（stepFigures：loyalty 跌破临界→倒戈/不信任投票/逼宫政变）
 - [ ] v4b.5 人物贯穿叙事 + 结局命运 + 编年史

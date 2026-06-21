@@ -7,7 +7,7 @@ import { GOV_LABELS } from './ui/format';
 import { autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS } from './ui/saveLoad';
 import {
   menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML, worldViewHTML, chronicleHTML,
-  mandateHTML, previewHTML, crisisHTML,
+  mandateHTML, previewHTML, crisisHTML, figuresHTML,
 } from './ui/view';
 
 type Screen = 'menu' | 'play' | 'end';
@@ -194,7 +194,7 @@ function render(): void {
     <button class="tab ${app.view === 'world' ? 'on' : ''}" data-action="view" data-view="world">世界</button>
   </div>`;
   const attribution = app.lastAttribution ? `<div class="attribution">${esc(app.lastAttribution)}</div>` : '';
-  const leftMain = app.view === 'world' ? worldViewHTML(app.world!) : `${mandateHTML(g)}${attribution}${dashboardHTML(g)}${reportHTML(g)}${chronicleHTML(g)}`;
+  const leftMain = app.view === 'world' ? worldViewHTML(app.world!) : `${mandateHTML(g)}${attribution}${dashboardHTML(g)}${reportHTML(g)}${figuresHTML(g)}${chronicleHTML(g)}`;
   root.innerHTML = `<div class="play">
       ${headerHTML(g)}
       ${crisisHTML(g)}
