@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { newWorld, previewTurn, advanceTurn } from './index';
 import { worldFingerprint } from './save';
-import { getMandate } from '../data/mandates';
+import { getMandate, MANDATES } from '../data/mandates';
 
 describe('preview (a) is a pure dry-run', () => {
   it('previewTurn does not mutate the world', () => {
@@ -44,5 +44,14 @@ describe('mandate (a) assigned at start, progress bounded', () => {
     expect(p).toBeGreaterThanOrEqual(0);
     expect(p).toBeLessThanOrEqual(1);
     expect(typeof m!.detail(s)).toBe('string');
+  });
+});
+
+describe('mandate (b) debt crisis trumps; every mandate has a how-to hint', () => {
+  it('a debt-heavy country (JP) gets 降债, not an unwinnable green; all mandates have hints', () => {
+    const jp = newWorld('JP', 5).countries.JP;
+    expect(jp.debtPctGdp).toBeGreaterThan(1.0);
+    expect(jp.mandateId).toBe('deleverage');
+    for (const m of MANDATES) expect(m.hintZh.length, m.id).toBeGreaterThan(5);
   });
 });

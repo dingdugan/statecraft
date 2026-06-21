@@ -88,6 +88,7 @@ export function mandateHTML(s: GameState): string {
     <p class="m-desc">${esc(m.descZh)}</p>
     <div class="m-bar"><div class="m-fill" style="width:${pct}%"></div></div>
     <div class="m-detail">${esc(m.detail(s))}</div>
+    <div class="m-hint">💡 ${esc(m.hintZh)}</div>
   </div>`;
 }
 

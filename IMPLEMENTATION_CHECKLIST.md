@@ -48,6 +48,10 @@
       验收: 浏览器(NG)国策6单选+选拼经济预览当场变(previewChanged)；(JP)开局即触发「⚠️债务危机·还剩3年扭转」红横幅+警告；tsc 干净 36/36 测试绿
       证据: focuses.ts(FOCUSES 6+getFocus)；reducers/crisis.ts(CRISES+stepCrisis 开/化解/超时)；types.ts(PendingDecisions.focus+activeCrisis)；advanceTurn.ts(接入)；index.ts+save.ts(init+backfill)；view.ts(focus面板+crisisHTML+预览含focus)；main.ts(toggleFocus单选+crisis渲染)；style.css；tension.test.ts focus(a)(b)+crisis(a)(b)
 
+- [x] v3.2 可操作性修复（试玩反馈：找不到怎么降排放）：使命分配债务优先(日本债务242%→「休养生息·降债」而非死局「绿色转型」)；每个使命加「怎么推进」hint；green 去掉债务死局惩罚
+      验收: 浏览器 JP→「休养生息」+ hint「把支出压到税收以下…」；37/37 测试绿
+      证据: mandates.ts(pickMandate债务优先+hintZh+green progress)；view.ts/style.css(m-hint)；preview.test.ts mandate(b) JP→deleverage+每使命有hint
+
 ## Done
 
 ### 复盘 + 后续改进（review/QA 之后）
