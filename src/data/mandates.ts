@@ -21,31 +21,31 @@ function realPerCap(s: GameState): number {
 export const MANDATES: MandateDef[] = [
   {
     id: 'superpower', titleZh: '缔造盛世', descZh: '任内把治国评分推上 85，跻身强国之列。',
-    hintZh: '评分 = 繁荣 × 稳定 × 合法性 的乘积，别偏科：稳增长、压动荡、提民生缺一不可。',
+    hintZh: '评分是三根柱子的乘积——繁荣、稳定、合法性。最矮的那根，决定你的天花板。',
     progress: (s) => clamp(s.score / 85, 0, 1),
     detail: (s) => `治国评分 ${s.score.toFixed(0)} / 85`,
   },
   {
     id: 'prosperity', titleZh: '国富民强', descZh: '把实际人均 GDP 拉到 $80k 的富裕水平。',
-    hintZh: '调高「教育」+「研发」预算拉升生产力与科技，推动长期实际增长（短期见效慢、要耐心）。',
+    hintZh: '真正的富裕来自生产力，而生产力是慢变量：今天埋下的种，要多年后才见收成。',
     progress: (s) => clamp(realPerCap(s) / 80000, 0, 1),
     detail: (s) => `人均 $${(realPerCap(s) / 1000).toFixed(0)}k / $80k`,
   },
   {
     id: 'green', titleZh: '绿色转型', descZh: '把排放强度压到 30 以下。',
-    hintZh: '调高「研发」+「基建」预算分配（两者合计需 >5%GDP 才开始减排，要明显降需 15%+），并在「能源转型」事件里选清洁能源。',
+    hintZh: '排放是产业结构与绿色投入的拉锯——把钱投向未来，而不是烟囱。',
     progress: (s) => clamp((100 - s.emissions) / 70, 0, 1),
     detail: (s) => `排放 ${s.emissions.toFixed(0)} / 30`,
   },
   {
     id: 'stability', titleZh: '长治久安', descZh: '让稳定站上 90、动荡远离临界，安度任期。',
-    hintZh: '提升「福利」「医疗」满意度、压低失业与通胀；动荡高时用「稳政治」国策或「维稳整肃」行动。',
+    hintZh: '稳定生于民心：让人吃饱、有医、对明天有指望，动荡自会退潮。',
     progress: (s) => clamp(s.stability / 90, 0, 1),
     detail: (s) => `稳定 ${s.stability.toFixed(0)} / 90 · 动荡 ${s.unrest.toFixed(0)}`,
   },
   {
     id: 'deleverage', titleZh: '休养生息', descZh: '把公共债务降到 GDP 的 60% 以下。',
-    hintZh: '把「支出规模」压到税收以下（看预览的「赤字」转负即盈余）、提高税率，并用「修财政」国策直接降债。',
+    hintZh: '债务只在收入持续盖过支出时才回头——盈余、低息、和耐心。',
     progress: (s) => clamp((1.2 - s.debtPctGdp) / 0.6, 0, 1),
     detail: (s) => `债务 ${(s.debtPctGdp * 100).toFixed(0)}% / 60%`,
   },

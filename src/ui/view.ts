@@ -88,7 +88,7 @@ export function mandateHTML(s: GameState): string {
     <p class="m-desc">${esc(m.descZh)}</p>
     <div class="m-bar"><div class="m-fill" style="width:${pct}%"></div></div>
     <div class="m-detail">${esc(m.detail(s))}</div>
-    <div class="m-hint">💡 ${esc(m.hintZh)}</div>
+    <details class="m-hint"><summary>💡 提示（默认靠自己摸索，卡住再看）</summary>${esc(m.hintZh)}</details>
   </div>`;
 }
 

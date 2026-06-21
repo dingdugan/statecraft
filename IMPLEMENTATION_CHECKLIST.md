@@ -78,6 +78,10 @@
       验收: tsc 干净 42/42 绿(characters e 戏剧→chronicle)；浏览器桑布里亚黯然下台结局屏显示「✗ 地方实力派 尤伦川 背弃了你」
       证据: figures.ts(戏剧 push chronicle)；view.ts(endHTML castRecap)；style.css(end-cast)；characters.test.ts (e)
 
+- [x] hint 调优(2026-06-21 试玩反馈"提示太白=无脑操作")：任期使命 hint 默认折叠(<details>，点「💡提示」才展开) + 文案从「配方」改「方向点拨」(去掉"用X国策/调Y预算>5%"等手把手步骤)。指北针，不是 GPS
+      验收: 浏览器 hint 默认 openDefault=false、点开展开、文案方向化；tsc 干净 42/42 绿
+      证据: mandates.ts(5 hint 方向化)；view.ts(details 折叠)；style.css(summary)
+
 ## Done
 
 ### 复盘 + 后续改进（review/QA 之后）
