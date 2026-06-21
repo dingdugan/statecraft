@@ -5,6 +5,7 @@
 import type { GameState } from '../engine/types';
 import type { StepContext } from '../engine/context';
 import { clamp, hasTrait } from '../engine/util';
+import { figureByTitle } from './characters';
 
 export interface EventOption {
   label: string;
@@ -164,9 +165,9 @@ export const EVENTS: EventDef[] = [
     weight: 3, condition: (s) => s.turn > 1,
     options: [
       { label: 'Launch a full investigation', labelZh: '彻查到底',
-        apply: (s) => { s.approval = clamp(s.approval + 2, 0, 100); s.stability = clamp(s.stability - 2, 0, 100); chain(s, 'investigation_result', 1); } },
+        apply: (s, ctx) => { s.approval = clamp(s.approval + 2, 0, 100); s.stability = clamp(s.stability - 2, 0, 100); chain(s, 'investigation_result', 1); const opp = figureByTitle(s, '反对党领袖'); if (opp) { opp.loyalty = clamp(opp.loyalty + 8, -100, 100); ctx.log.push({ kind: 'politics', msg: `反对党领袖 ${opp.nameZh} 认可你的反腐决心` }); } const mag = figureByTitle(s, '财政巨头'); if (mag) mag.loyalty = clamp(mag.loyalty - 10, -100, 100); } },
       { label: 'Suppress it', labelZh: '压下消息',
-        apply: (s) => { s.unrest = clamp(s.unrest + 8, 0, 100); s.legitimacy = clamp(s.legitimacy - 4, 0, 100); } },
+        apply: (s, ctx) => { s.unrest = clamp(s.unrest + 8, 0, 100); s.legitimacy = clamp(s.legitimacy - 4, 0, 100); const opp = figureByTitle(s, '反对党领袖'); if (opp) { opp.loyalty = clamp(opp.loyalty - 10, -100, 100); ctx.log.push({ kind: 'politics', msg: `反对党领袖 ${opp.nameZh} 痛斥你掩盖丑闻` }); } } },
     ],
   },
   {
@@ -455,9 +456,9 @@ export const EVENTS: EventDef[] = [
     weight: 3, condition: (s) => s.coupRisk > 20,
     options: [
       { label: 'Purge suspect officers', labelZh: '清洗可疑军官',
-        apply: (s) => { s.coupRisk = clamp(s.coupRisk - 10, 0, 100); s.militaryReadiness = clamp(s.militaryReadiness - 4, 0, 100); s.stability = clamp(s.stability + 2, 0, 100); } },
+        apply: (s, ctx) => { s.coupRisk = clamp(s.coupRisk - 10, 0, 100); s.militaryReadiness = clamp(s.militaryReadiness - 4, 0, 100); s.stability = clamp(s.stability + 2, 0, 100); const mil = figureByTitle(s, '军方统帅'); if (mil) { mil.loyalty = clamp(mil.loyalty - 15, -100, 100); ctx.log.push({ kind: 'politics', msg: `军方统帅 ${mil.nameZh} 对清洗怀恨在心` }); } } },
       { label: 'Buy their loyalty', labelZh: '收买军心',
-        apply: (s) => { s.reserves -= 0.02 * s.gdp; s.coupRisk = clamp(s.coupRisk - 8, 0, 100); } },
+        apply: (s, ctx) => { s.reserves -= 0.02 * s.gdp; s.coupRisk = clamp(s.coupRisk - 8, 0, 100); const mil = figureByTitle(s, '军方统帅'); if (mil) { mil.loyalty = clamp(mil.loyalty + 12, -100, 100); ctx.log.push({ kind: 'politics', msg: `军方统帅 ${mil.nameZh} 领情，军心暂稳` }); } } },
     ],
   },
   {

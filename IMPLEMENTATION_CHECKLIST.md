@@ -64,7 +64,9 @@
 - [x] v4b.2 政坛面板 UI：figuresHTML(人物列表:名+头衔+立场+性格+对你忠诚标签 盟友/支持/中立/不满/敌对) 接入本国视图
       验收: 浏览器北河联邦显示 5 政客(穆文澜·反对党领袖·不满−38 / 沈谌·军方统帅·支持13 / 林安伦·媒体大亨·盟友42…)；tsc 干净 39/39 绿
       证据: view.ts(figuresHTML+LOYALTY_TIER)；main.ts(接入 leftMain)；style.css(.figures/.fig)
-- [ ] v4b.3 事件/危机绑人物（"财长X警告…""将军Y异动"，选择影响 loyalty）
+- [x] v4b.3 事件绑人物：figureByTitle helper；腐败丑闻(彻查→反对党领袖+8/财阀−10，压下→反对党−10)、政变传闻(清洗→军方统帅−15，收买→+12)，各 log 人名反应
+      验收: tsc 干净 40/40 绿(characters c 清洗降/收买升军方忠诚)
+      证据: characters.ts(figureByTitle)；events.ts(corruption_scandal+coup_rumor apply 改 loyalty+log 人名)；characters.test.ts (c)
 - [ ] v4b.4 戏剧行动（stepFigures：loyalty 跌破临界→倒戈/不信任投票/逼宫政变）
 - [ ] v4b.5 人物贯穿叙事 + 结局命运 + 编年史
 

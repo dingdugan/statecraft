@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateFigures } from '../data/characters';
-import { newWorld } from './index';
+import { newGame, newWorld } from './index';
+import { resolveEventChoice } from './reducers/events';
 
 describe('characters (a) deterministic generation', () => {
   it('same country+seed ⇒ identical cast; 4-6 figures, valid fields, has opposition + military', () => {
@@ -25,5 +26,19 @@ describe('characters (b) newGame populates the cast', () => {
     const w = newWorld('JP', 7);
     expect(w.countries.JP.figures.length).toBeGreaterThanOrEqual(4);
     expect(w.countries.JP.figures).not.toEqual(w.countries.DE.figures);
+  });
+});
+
+describe('characters (c) events shift a figure’s loyalty', () => {
+  const milLoyDelta = (opt: number): number => {
+    let s = newGame('DE', 5);
+    const before = s.figures.find((f) => f.title === '军方统帅')!.loyalty;
+    s.pendingEventId = 'coup_rumor';
+    s = resolveEventChoice(s, 'coup_rumor', opt);
+    return s.figures.find((f) => f.title === '军方统帅')!.loyalty - before;
+  };
+  it('purging officers lowers the military chief; buying loyalty raises them', () => {
+    expect(milLoyDelta(0)).toBeLessThan(0); // 清洗 → 记恨
+    expect(milLoyDelta(1)).toBeGreaterThan(0); // 收买 → 领情
   });
 });

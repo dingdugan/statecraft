@@ -2,7 +2,7 @@
 // — the "who" the player contends with. Procedurally generated from a seed so each game is
 // different but reproducible (save/reload identical). Loyalty drives drama in later steps.
 
-import type { PoliticalFigure } from '../engine/types';
+import type { GameState, PoliticalFigure } from '../engine/types';
 import { Rng, makeRngState } from '../engine/rng';
 
 const SURNAMES = [
@@ -69,4 +69,9 @@ export function generateFigures(countryId: string, seed: number): PoliticalFigur
     });
   }
   return figures;
+}
+
+/** Find a figure by their title (e.g. '军方统帅'), or undefined if this cast lacks one. */
+export function figureByTitle(s: GameState, title: string): PoliticalFigure | undefined {
+  return s.figures.find((f) => f.title === title);
 }
