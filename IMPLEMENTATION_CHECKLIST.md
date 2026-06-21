@@ -39,6 +39,15 @@
       证据: src/engine/reducers/narrative.ts(stepNarrative/yearNarrative/MILESTONES)；types.ts(ChronicleEntry/chronicle)；advanceTurn.ts(接入)；save.ts(backfill)；view.ts+main.ts(chronicleHTML)；narrative.test.ts (a)(b)(c)
 - [ ] （并入 v2.5/平衡）让强国也需主动经营：当前强国可较被动夺胜，靠世界压力+行动成本提升维持难度
 
+## v3 可玩性重构（用户反馈：可玩性差 = 缺「问题→抉择→反馈」循环；症状=不知道该干嘛/调了没张力/看不懂数字为啥动）
+
+- [x] v3.0 第一刀 · 决策预览 + 任期目标 + 回合归因（A目标+C反馈，翻译已有系统、不堆新模拟）
+      验收: 浏览器(德国)使命「缔造盛世 86% · 评分73/85」、拖税率滑块到58%预览实时变(previewChanged=true)、推进后归因「评分▼4·支持率−2」；tsc 干净 32/32 测试绿
+      证据: index.ts(previewTurn 纯干运行)；mandates.ts(MANDATES 5+pickMandate)；types.ts+save.ts(mandateId+backfill)；view.ts(mandateHTML/previewHTML/decisionsHTML预览块)；main.ts(updatePreview实时/currentDecisions/attribution)；style.css；preview.test.ts (a)纯(b)==真实advance(c)null-when-blocked + mandate(a)bounded
+- [ ] v3.1 第二刀 · 决策张力（B）：关键决策离散互斥(年度重点 救经济/稳政治/扩军备 三选一) + 事件选项改真两难 + 动态危机系统
+      验收: <待 v3.0 手感确认后细化>
+      证据: <>
+
 ## Done
 
 ### 复盘 + 后续改进（review/QA 之后）

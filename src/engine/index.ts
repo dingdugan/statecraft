@@ -8,8 +8,10 @@ import { computeResources } from './reducers/resources';
 import { getScenario } from '../data/scenarios';
 import { C } from './constants';
 import { COUNTRY_IDS } from '../data/countries';
+import { pickMandate } from '../data/mandates';
+import { advanceTurn } from './advanceTurn';
 import type { WorldState } from './world';
-import type { GameState } from './types';
+import type { GameState, PendingDecisions } from './types';
 
 export function newGame(countryId: string, seed: number, scenarioId = 'standard'): GameState {
   const c = getCountry(countryId);
@@ -82,6 +84,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
     prosperity: 0,
     score: 0,
     victoryStreak: 0,
+    mandateId: '',
 
     usedEventIds: [],
     usedPolicyIds: [],
@@ -93,6 +96,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
   computeQol(s);
   initRelations(s);
   computeScore(s);
+  s.mandateId = pickMandate(s);
   if (scenarioId !== 'standard') {
     getScenario(scenarioId).apply(s);
     computeDiplomacy(s);
@@ -113,8 +117,17 @@ export function newWorld(playerId: string, seed: number, scenarioId = 'standard'
   return { countries, playerId, turn: 0, news: [], rng: makeRngState((seed ^ 0x6d2b79f5) & 0x7fffffff) };
 }
 
-export { advanceTurn } from './advanceTurn';
+export { advanceTurn };
 export { advanceWorld } from './world';
+
+/** Predict the player's next-turn state for a decision set, WITHOUT mutating the world.
+ *  advanceTurn is pure + the RNG is deterministic, so this dry-run matches the real
+ *  player-country advance exactly. The world layer's events/diplomacy are external
+ *  surprises, intentionally not previewed. Null if the player can't advance right now. */
+export function previewTurn(player: GameState, decisions: PendingDecisions = {}): GameState | null {
+  if (player.status !== 'playing' || player.pendingEventId) return null;
+  return advanceTurn(player, decisions);
+}
 export type { WorldState, NewsItem } from './world';
 export { resolveEventChoice } from './reducers/events';
 export { interestRate } from './reducers/fiscal';

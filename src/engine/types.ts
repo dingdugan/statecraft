@@ -109,6 +109,7 @@ export interface GameState {
   prosperity: number; // 0..100 (derived each turn)
   score: number; // 0..100 composite
   victoryStreak: number; // consecutive years at score >= 85 (for SUPERPOWER victory)
+  mandateId: string; // the player's tenure objective (a goal lens, not simulated state)
 
   // events / policies
   pendingEventId?: string;

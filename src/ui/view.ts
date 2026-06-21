@@ -4,8 +4,10 @@ import { COUNTRIES, getCountry } from '../data/countries';
 import { getEvent } from '../data/events';
 import { POLICIES } from '../data/policies';
 import { ACTIONS, getAction } from '../data/actions';
+import { getMandate } from '../data/mandates';
 import { SCENARIOS } from '../data/scenarios';
-import { SPEND_CATEGORIES } from '../engine/util';
+import { SPEND_CATEGORIES, normalizeAllocation } from '../engine/util';
+import { previewTurn } from '../engine';
 import {
   briefings, fmtMoney, fmtMoneyShort, fmtPct, fmtPop, fmtSigned,
   GOV_LABELS, ratingLabel, SPEND_LABELS,
@@ -61,6 +63,39 @@ function tone3(v: number, warn: number, bad: number, invert = false): string {
   if (x <= b) return 'bad';
   if (x <= w) return 'warn';
   return 'good';
+}
+
+// ─── Tenure mandate card (v3.0): always-on "what am I playing toward" ──────────────
+export function mandateHTML(s: GameState): string {
+  const m = getMandate(s.mandateId);
+  if (!m) return '';
+  const pct = Math.round(m.progress(s) * 100);
+  return `<div class="mandate">
+    <div class="m-top"><span class="m-tag">任期使命</span><b class="m-title">${esc(m.titleZh)}</b><span class="m-pct">${pct}%</span></div>
+    <p class="m-desc">${esc(m.descZh)}</p>
+    <div class="m-bar"><div class="m-fill" style="width:${pct}%"></div></div>
+    <div class="m-detail">${esc(m.detail(s))}</div>
+  </div>`;
+}
+
+// ─── Decision preview (v3.0): exact predicted deltas of the pending decisions ───────
+export function previewHTML(cur: GameState, next: GameState): string {
+  const rows: { k: string; a: number; b: number; fmt: (v: number) => string; good: 1 | -1 }[] = [
+    { k: '实际增长', a: cur.gdpGrowthReal * 100, b: next.gdpGrowthReal * 100, fmt: (v) => `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`, good: 1 },
+    { k: '赤字 %GDP', a: cur.deficitPctGdp * 100, b: next.deficitPctGdp * 100, fmt: (v) => `${v.toFixed(1)}%`, good: -1 },
+    { k: '债务 %GDP', a: cur.debtPctGdp * 100, b: next.debtPctGdp * 100, fmt: (v) => `${v.toFixed(0)}%`, good: -1 },
+    { k: '支持率', a: cur.approval, b: next.approval, fmt: (v) => v.toFixed(0), good: 1 },
+    { k: '稳定', a: cur.stability, b: next.stability, fmt: (v) => v.toFixed(0), good: 1 },
+    { k: '治国评分', a: cur.score, b: next.score, fmt: (v) => v.toFixed(0), good: 1 },
+  ];
+  const cells = rows.map((r) => {
+    const d = r.b - r.a;
+    const flat = Math.abs(d) < 0.05;
+    const tone = flat ? '' : (d > 0) === (r.good === 1) ? 'good' : 'bad';
+    const arrow = flat ? '→' : d > 0 ? '▲' : '▼';
+    return `<div class="pv-row"><span class="pv-k">${r.k}</span><span class="pv-v">${r.fmt(r.a)} <span class="pv-d ${tone}">${arrow} ${r.fmt(r.b)}</span></span></div>`;
+  }).join('');
+  return `<div class="preview"><div class="pv-head">推进预测 · ${next.year} 年</div>${cells}</div>`;
 }
 
 export function dashboardHTML(s: GameState): string {
@@ -197,6 +232,15 @@ export function decisionsHTML(
     </button>`;
   }).join('');
 
+  const predicted = previewTurn(s, {
+    taxRate: pendingTax,
+    spendingPctGdp: pendingSpend,
+    allocation: normalizeAllocation(pendingAlloc),
+    enactPolicyIds: pendingPolicies,
+    actions: pendingActions,
+  });
+  const preview = predicted ? previewHTML(s, predicted) : '';
+
   return `<div class="decisions">
     <h3>本年决策</h3>
     <div class="lever">
@@ -215,6 +259,7 @@ export function decisionsHTML(
     </div>
     <div class="policies"><label>政策</label><div class="policy-grid">${policyBtns}</div></div>
     <div class="actions-panel"><label>主动行动 <small>政治资本 <b class="pc">${s.politicalCapital.toFixed(0)}</b> · 本回合已用 ${selectedCost}⚙</small></label><div class="action-grid">${actionBtns}</div></div>
+    ${preview}
     <button class="btn primary advance" data-action="advance">推进一年 ▸ ${s.year + 1}</button>
   </div>`;
 }
