@@ -242,6 +242,12 @@ input[type="range"] { width: 100%; accent-color: var(--gold); cursor: pointer; }
 .final-score { font-size: 16px; color: var(--ink-dim); margin-bottom: 20px; }
 .final-score b { font-size: 52px; color: var(--gold); display: block; line-height: 1.1; }
 .end-recap { text-align: left; max-width: 320px; margin: 0 auto 24px; }
+.end-cast { text-align: left; max-width: 360px; margin: 0 auto 22px; }
+.end-cast h3 { margin-bottom: 8px; text-align: center; }
+.ec-row { font-size: 13px; padding: 3px 0; }
+.ec-row.good { color: var(--good); }
+.ec-row.bad { color: var(--bad); }
+.ec-row.muted { color: var(--ink-mute); }
 
 /* ── world view (v2.2) ─────────────────────────────────────── */
 .viewtabs { display: flex; gap: 8px; margin-bottom: 14px; }

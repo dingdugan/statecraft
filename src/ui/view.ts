@@ -358,6 +358,15 @@ export function endHTML(s: GameState): string {
     ended: '🏁 任期落幕',
   };
   const title = titles[s.status] ?? '游戏结束';
+  const traitors = s.figures.filter((f) => f.acted);
+  const loyalists = s.figures.filter((f) => !f.acted && f.loyalty > 40);
+  const castRecap = s.figures.length
+    ? `<div class="end-cast"><h3>你的政坛</h3>${traitors
+        .map((f) => `<div class="ec-row bad">✗ ${esc(f.title)} ${esc(f.nameZh)} 背弃了你</div>`)
+        .join('')}${loyalists
+        .map((f) => `<div class="ec-row good">✓ ${esc(f.title)} ${esc(f.nameZh)} 忠诚到最后</div>`)
+        .join('')}${!traitors.length && !loyalists.length ? '<div class="ec-row muted">政坛平稳，无人离心，也无人死忠。</div>' : ''}</div>`
+    : '';
   return `<div class="end">
     <h1>${title}</h1>
     <p class="epitaph">${esc(s.endReason ?? '')}</p>
@@ -369,6 +378,7 @@ export function endHTML(s: GameState): string {
       ${stat('公共债务', fmtPct(s.debtPctGdp, 0))}
       ${stat('支持率', s.approval.toFixed(0))}
     </div>
+    ${castRecap}
     <button class="btn primary" data-action="menu">↺ 再来一局</button>
   </div>`;
 }

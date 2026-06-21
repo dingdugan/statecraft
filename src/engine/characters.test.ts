@@ -57,3 +57,13 @@ describe('characters (d) collapsed loyalty stages a one-time drama', () => {
     expect(s.figures.find((f) => f.title === '军方统帅')!.acted).toBe(true);
   });
 });
+
+describe('characters (e) drama is recorded in the chronicle', () => {
+  it('a coup attempt leaves a fig: chronicle entry', () => {
+    let s = newGame('DE', 5);
+    s.figures.find((f) => f.title === '军方统帅')!.loyalty = -80;
+    s = advanceTurn(s, {});
+    if (s.pendingEventId) s = resolveEventChoice(s, s.pendingEventId, 0);
+    expect(s.chronicle.some((c) => c.id.startsWith('fig:'))).toBe(true);
+  });
+});

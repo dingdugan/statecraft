@@ -71,7 +71,9 @@
       验收: tsc 干净 41/41 绿(characters d 军方崩→政变企图、acted)；平衡 sim(12世界×40年 volatile玩家) catastrophic=0、戏剧 7 次偶发
       证据: reducers/figures.ts(stepFigures 漂移+戏剧)；types.ts(acted)；advanceTurn.ts(接入 stepCrisis 后)；characters.test.ts (d)
 - [ ] 遗留(非v4b·v3.1锅)：高债务 NPC 因债务危机倒计时超时破产(某seed批~17/192国，NPC aiDecide 不主动降债)；需让 aiDecide 危机时降支出降债
-- [ ] v4b.5 人物贯穿叙事 + 结局命运 + 编年史
+- [x] v4b.5 人物贯穿：戏剧入编年史(fig:id 去重)；结局屏「你的政坛」点名背叛者(✗)/忠诚者(✓ loyalty>40)
+      验收: tsc 干净 42/42 绿(characters e 戏剧→chronicle)；浏览器桑布里亚黯然下台结局屏显示「✗ 地方实力派 尤伦川 背弃了你」
+      证据: figures.ts(戏剧 push chronicle)；view.ts(endHTML castRecap)；style.css(end-cast)；characters.test.ts (e)
 
 ## Done
 
