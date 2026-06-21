@@ -14,8 +14,13 @@ export function aiDecide(cs: GameState): PendingDecisions {
   const slump = cs.unemployment > 0.1;
   const overheating = cs.inflation > 0.06;
   const fiscalStress = cs.deficitPctGdp > 0.06 || cs.debtPctGdp > 1.2;
+  const debtCrisis = cs.activeCrisis?.id === 'debt' || cs.debtPctGdp > 1.3;
 
-  if (fiscalStress || overheating) {
+  if (debtCrisis) {
+    // a debt crisis: deleverage aggressively, or the countdown ends in sovereign default
+    spend = clamp(spend - 0.03, 0.12, 0.65);
+    tax = clamp(tax + 0.01, 0.12, 0.6);
+  } else if (fiscalStress || overheating) {
     spend = clamp(spend - 0.015, 0.12, 0.65);
     tax = clamp(tax + 0.006, 0.12, 0.6);
   } else if (slump) {

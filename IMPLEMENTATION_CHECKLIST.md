@@ -71,7 +71,9 @@
 - [x] v4b.4 戏剧行动：stepFigures(loyalty 随治理好坏漂移 + 跌破临界一次性触发)：军方统帅<−50 逼宫(coupRisk+30/stability−10)、反对党领袖<−55 不信任投票、财阀/媒体等<−25 倒戈；acted 防重复；log 点名
       验收: tsc 干净 41/41 绿(characters d 军方崩→政变企图、acted)；平衡 sim(12世界×40年 volatile玩家) catastrophic=0、戏剧 7 次偶发
       证据: reducers/figures.ts(stepFigures 漂移+戏剧)；types.ts(acted)；advanceTurn.ts(接入 stepCrisis 后)；characters.test.ts (d)
-- [ ] 遗留(非v4b·v3.1锅)：高债务 NPC 因债务危机倒计时超时破产(某seed批~17/192国，NPC aiDecide 不主动降债)；需让 aiDecide 危机时降支出降债
+- [x] 修遗留(2026-06-21)：① NPC 高债务破产 17→2(aiDecide 危机激进降债 spend−0.03/tax+0.01 + 债务危机豁免 cheap_debt 国 trigger 1.3→2.6，东屿这类高债务深市场国不再误判违约)；② figures stance shuffle 分配(一局内立场多样，不再全改革派)
+      验收: 平衡 sim(12世界×40年) bankrupt 17→2；tsc 干净 42/42 绿
+      证据: ai.ts(debtCrisis 分支)；crisis.ts(debt trigger/clear cheap_debt-aware)；characters.ts(stancePool shuffle)；world.test(i)改多seed稳健；tension.test crisis 改非cheap_debt国
 - [x] v4b.5 人物贯穿：戏剧入编年史(fig:id 去重)；结局屏「你的政坛」点名背叛者(✗)/忠诚者(✓ loyalty>40)
       验收: tsc 干净 42/42 绿(characters e 戏剧→chronicle)；浏览器桑布里亚黯然下台结局屏显示「✗ 地方实力派 尤伦川 背弃了你」
       证据: figures.ts(戏剧 push chronicle)；view.ts(endHTML castRecap)；style.css(end-cast)；characters.test.ts (e)

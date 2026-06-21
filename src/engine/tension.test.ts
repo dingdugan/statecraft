@@ -32,7 +32,7 @@ describe('focus (b) 拼经济 is a real tradeoff', () => {
 
 describe('crisis (a) opens, counts down, and busts on timeout', () => {
   it('a sustained debt crisis eventually fails into bankruptcy', () => {
-    let s = newGame('JP', 3);
+    let s = newGame('DE', 3);
     s.debtPctGdp = 1.5; // force into the danger band
     s = advanceTurn(s, {});
     if (s.pendingEventId) s = resolveEventChoice(s, s.pendingEventId, 0);
@@ -49,7 +49,7 @@ describe('crisis (a) opens, counts down, and busts on timeout', () => {
 
 describe('crisis (b) reversing it clears the crisis', () => {
   it('pulling debt back to safety clears the crisis with no bust', () => {
-    let s = newGame('JP', 3);
+    let s = newGame('DE', 3);
     s.debtPctGdp = 1.5;
     s = advanceTurn(s, {});
     if (s.pendingEventId) s = resolveEventChoice(s, s.pendingEventId, 0);

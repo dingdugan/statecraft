@@ -15,8 +15,9 @@ export const CRISES: CrisisDef[] = [
   {
     id: 'debt', labelZh: '债务危机', deadline: 4,
     warnZh: '债务濒临失控、市场信心动摇——若不在期限内压降，将主权违约。',
-    trigger: (s) => s.debtPctGdp > 1.3,
-    cleared: (s) => s.debtPctGdp < 1.15,
+    // cheap_debt economies (deep domestic markets) sustain far higher debt without a run
+    trigger: (s) => s.debtPctGdp > (s.traits.includes('cheap_debt') ? 2.6 : 1.3),
+    cleared: (s) => s.debtPctGdp < (s.traits.includes('cheap_debt') ? 2.4 : 1.15),
     fail: (s) => { s.status = 'bankrupt'; s.endReason = '债务危机失控，主权违约破产。'; },
   },
   {

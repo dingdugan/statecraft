@@ -51,6 +51,11 @@ export function generateFigures(countryId: string, seed: number): PoliticalFigur
   }
   const titles = ['反对党领袖', '军方统帅', ...extras].slice(0, count);
 
+  const stancePool = [...STANCES];
+  for (let i = stancePool.length - 1; i > 0; i--) {
+    const j = Math.floor(rng.next() * (i + 1));
+    [stancePool[i], stancePool[j]] = [stancePool[j], stancePool[i]];
+  }
   const used = new Set<string>();
   const figures: PoliticalFigure[] = [];
   for (let i = 0; i < count; i++) {
@@ -63,7 +68,7 @@ export function generateFigures(countryId: string, seed: number): PoliticalFigur
       id: `fig${i}`,
       nameZh: genName(rng, used),
       title,
-      stance: pick(rng, STANCES),
+      stance: stancePool[i % stancePool.length],
       personality: pick(rng, PERSONALITIES),
       loyalty,
     });

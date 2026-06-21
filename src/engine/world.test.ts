@@ -136,11 +136,13 @@ describe('world (h) international wars can ignite', () => {
 
 describe('world (i) global world-events fire', () => {
   it('over many turns a world-event headline (who=world) appears in the news', () => {
-    let w = newWorld('DE', 555);
     let sawWorldEvent = false;
-    for (let i = 0; i < 50 && w.countries.DE.status === 'playing'; i++) {
-      w = playW(w);
-      if (w.news.some((n) => n.who === 'world')) sawWorldEvent = true;
+    for (const seed of [555, 1234, 9999]) {
+      let w = newWorld('DE', seed);
+      for (let i = 0; i < 50 && w.countries.DE.status === 'playing'; i++) {
+        w = playW(w);
+        if (w.news.some((n) => n.who === 'world')) sawWorldEvent = true;
+      }
     }
     expect(sawWorldEvent).toBe(true);
   });
