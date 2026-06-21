@@ -44,9 +44,9 @@
 - [x] v3.0 第一刀 · 决策预览 + 任期目标 + 回合归因（A目标+C反馈，翻译已有系统、不堆新模拟）
       验收: 浏览器(德国)使命「缔造盛世 86% · 评分73/85」、拖税率滑块到58%预览实时变(previewChanged=true)、推进后归因「评分▼4·支持率−2」；tsc 干净 32/32 测试绿
       证据: index.ts(previewTurn 纯干运行)；mandates.ts(MANDATES 5+pickMandate)；types.ts+save.ts(mandateId+backfill)；view.ts(mandateHTML/previewHTML/decisionsHTML预览块)；main.ts(updatePreview实时/currentDecisions/attribution)；style.css；preview.test.ts (a)纯(b)==真实advance(c)null-when-blocked + mandate(a)bounded
-- [ ] v3.1 第二刀 · 决策张力（B）：关键决策离散互斥(年度重点 救经济/稳政治/扩军备 三选一) + 事件选项改真两难 + 动态危机系统
-      验收: <待 v3.0 手感确认后细化>
-      证据: <>
+- [x] v3.1 第二刀 · 决策张力（B）：① 年度国策(六选一互斥:拼经济/稳政治/强军备/修财政/惠民生/攻科技，每个一维猛涨一维疼的真取舍) ② 动态危机(债务/动荡/政变逼近临界→顶部红横幅+倒计时，超时直接破产/革命/政变)
+      验收: 浏览器(NG)国策6单选+选拼经济预览当场变(previewChanged)；(JP)开局即触发「⚠️债务危机·还剩3年扭转」红横幅+警告；tsc 干净 36/36 测试绿
+      证据: focuses.ts(FOCUSES 6+getFocus)；reducers/crisis.ts(CRISES+stepCrisis 开/化解/超时)；types.ts(PendingDecisions.focus+activeCrisis)；advanceTurn.ts(接入)；index.ts+save.ts(init+backfill)；view.ts(focus面板+crisisHTML+预览含focus)；main.ts(toggleFocus单选+crisis渲染)；style.css；tension.test.ts focus(a)(b)+crisis(a)(b)
 
 ## Done
 

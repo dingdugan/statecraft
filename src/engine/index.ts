@@ -85,6 +85,7 @@ export function newGame(countryId: string, seed: number, scenarioId = 'standard'
     score: 0,
     victoryStreak: 0,
     mandateId: '',
+    activeCrisis: null,
 
     usedEventIds: [],
     usedPolicyIds: [],

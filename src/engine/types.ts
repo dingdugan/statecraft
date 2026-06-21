@@ -110,6 +110,7 @@ export interface GameState {
   score: number; // 0..100 composite
   victoryStreak: number; // consecutive years at score >= 85 (for SUPERPOWER victory)
   mandateId: string; // the player's tenure objective (a goal lens, not simulated state)
+  activeCrisis: { id: string; turnsLeft: number } | null; // counting-down threat to reverse (v3.1)
 
   // events / policies
   pendingEventId?: string;
@@ -128,6 +129,7 @@ export interface PendingDecisions {
   allocation?: Allocation;
   enactPolicyIds?: string[];
   actions?: string[]; // active-action ids the player spends political capital on this turn
+  focus?: string; // the year's single national focus (mutually exclusive strategic bet)
 }
 
 export interface CountryStart {

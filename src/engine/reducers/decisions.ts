@@ -4,6 +4,7 @@ import { TAX_MIN, TAX_MAX, SPEND_MIN, SPEND_MAX } from '../constants';
 import { clamp, normalizeAllocation } from '../util';
 import { POLICIES } from '../../data/policies';
 import { getAction } from '../../data/actions';
+import { getFocus } from '../../data/focuses';
 
 /** Apply the player's pending decisions (levers + enacted policies). Runs first. */
 export function applyDecisions(s: GameState, ctx: StepContext): GameState {
@@ -19,6 +20,14 @@ export function applyDecisions(s: GameState, ctx: StepContext): GameState {
       p.apply(s, ctx);
       if (p.oneShot) s.usedPolicyIds.push(id);
       ctx.log.push({ kind: 'info', msg: `政策：${p.nameZh}` });
+    }
+  }
+  // annual national focus (v3.1): one mutually-exclusive strategic bet, applied up front
+  if (d.focus) {
+    const f = getFocus(d.focus);
+    if (f) {
+      f.apply(s, ctx);
+      ctx.log.push({ kind: 'politics', msg: `🎯 国策：${f.labelZh}` });
     }
   }
   // active actions (v2.5): spend political capital on proactive diplomatic/military/domestic moves

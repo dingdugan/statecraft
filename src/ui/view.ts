@@ -5,6 +5,8 @@ import { getEvent } from '../data/events';
 import { POLICIES } from '../data/policies';
 import { ACTIONS, getAction } from '../data/actions';
 import { getMandate } from '../data/mandates';
+import { FOCUSES } from '../data/focuses';
+import { getCrisis } from '../engine/reducers/crisis';
 import { SCENARIOS } from '../data/scenarios';
 import { SPEND_CATEGORIES, normalizeAllocation } from '../engine/util';
 import { previewTurn } from '../engine';
@@ -63,6 +65,17 @@ function tone3(v: number, warn: number, bad: number, invert = false): string {
   if (x <= b) return 'bad';
   if (x <= w) return 'warn';
   return 'good';
+}
+
+// ─── Crisis banner (v3.1): a counting-down threat the player must reverse ──────────
+export function crisisHTML(s: GameState): string {
+  if (!s.activeCrisis) return '';
+  const c = getCrisis(s.activeCrisis.id);
+  if (!c) return '';
+  return `<div class="crisis">
+    <div class="cr-top"><span class="cr-tag">⚠️ ${esc(c.labelZh)}</span><span class="cr-timer">还剩 ${s.activeCrisis.turnsLeft} 年扭转</span></div>
+    <p class="cr-warn">${esc(c.warnZh)}</p>
+  </div>`;
 }
 
 // ─── Tenure mandate card (v3.0): always-on "what am I playing toward" ──────────────
@@ -204,6 +217,7 @@ export function decisionsHTML(
   pendingAlloc: Allocation,
   pendingPolicies: string[],
   pendingActions: string[],
+  pendingFocus: string | undefined,
 ): string {
   const allocSliders = SPEND_CATEGORIES.map((c: SpendCategory) => {
     const raw = Math.round((pendingAlloc[c] ?? 0) * 1000);
@@ -238,11 +252,20 @@ export function decisionsHTML(
     allocation: normalizeAllocation(pendingAlloc),
     enactPolicyIds: pendingPolicies,
     actions: pendingActions,
+    focus: pendingFocus,
   });
   const preview = predicted ? previewHTML(s, predicted) : '';
 
+  const focusBtns = FOCUSES.map((f) => {
+    const on = pendingFocus === f.id;
+    return `<button class="focus ${on ? 'on' : ''}" data-action="focus" data-id="${f.id}" title="${esc(f.descZh)}">
+      ${on ? '✓ ' : ''}${esc(f.labelZh)}<small>${esc(f.descZh)}</small>
+    </button>`;
+  }).join('');
+
   return `<div class="decisions">
     <h3>本年决策</h3>
+    <div class="focus-panel"><label>年度国策 <small>每年押一个方向（互斥 · 可不选）</small></label><div class="focus-grid">${focusBtns}</div></div>
     <div class="lever">
       <label>税收强度 <span id="taxval">${fmtPct(pendingTax, 0)}</span></label>
       ${slider('tax', 10, 60, 1, Math.round(pendingTax * 100))}

@@ -7,7 +7,7 @@ import { GOV_LABELS } from './ui/format';
 import { autoSave, loadAuto, saveSlot, loadSlot, clearSlot, slotInfo, SLOTS } from './ui/saveLoad';
 import {
   menuHTML, dashboardHTML, decisionsHTML, eventModalHTML, reportHTML, endHTML, worldViewHTML, chronicleHTML,
-  mandateHTML, previewHTML,
+  mandateHTML, previewHTML, crisisHTML,
 } from './ui/view';
 
 type Screen = 'menu' | 'play' | 'end';
@@ -22,6 +22,7 @@ interface App {
   view: 'home' | 'world';
   pendingActions: string[];
   lastAttribution: string;
+  pendingFocus?: string;
 }
 
 const esc = (x: string) => x.replace(/</g, '&lt;');
@@ -56,6 +57,7 @@ function syncPendingFromGame(g: GameState): void {
   app.pendingSpend = g.spendingPctGdp;
   app.pendingPolicies = [];
   app.pendingActions = [];
+  app.pendingFocus = undefined;
 }
 
 // ─── transitions ───────────────────────────────────────────────────────────────
@@ -88,6 +90,7 @@ function currentDecisions(): PendingDecisions {
     allocation: normalizeAllocation(app.pendingAlloc),
     enactPolicyIds: app.pendingPolicies,
     actions: app.pendingActions,
+    focus: app.pendingFocus,
   };
 }
 
@@ -147,6 +150,11 @@ function toggleAction(id: string): void {
   render();
 }
 
+function toggleFocus(id: string): void {
+  app.pendingFocus = app.pendingFocus === id ? undefined : id;
+  render();
+}
+
 // ─── render ──────────────────────────────────────────────────────────────────────
 function headerHTML(g: GameState): string {
   const c = getCountry(g.countryId);
@@ -189,9 +197,10 @@ function render(): void {
   const leftMain = app.view === 'world' ? worldViewHTML(app.world!) : `${mandateHTML(g)}${attribution}${dashboardHTML(g)}${reportHTML(g)}${chronicleHTML(g)}`;
   root.innerHTML = `<div class="play">
       ${headerHTML(g)}
+      ${crisisHTML(g)}
       <div class="cols">
         <div class="left">${tabs}${leftMain}</div>
-        <div class="right">${decisionsHTML(g, app.pendingTax, app.pendingSpend, app.pendingAlloc, app.pendingPolicies, app.pendingActions)}${saveBarHTML()}</div>
+        <div class="right">${decisionsHTML(g, app.pendingTax, app.pendingSpend, app.pendingAlloc, app.pendingPolicies, app.pendingActions, app.pendingFocus)}${saveBarHTML()}</div>
       </div>
     </div>
     ${eventModalHTML(g)}`;
@@ -259,6 +268,7 @@ root.addEventListener('click', (e) => {
     case 'resolve': doResolve(Number(t.dataset.opt)); break;
     case 'policy': togglePolicy(t.dataset.id!); break;
     case 'action': toggleAction(t.dataset.id!); break;
+    case 'focus': toggleFocus(t.dataset.id!); break;
     case 'menu': app.screen = 'menu'; render(); break;
     case 'save': if (app.world) { saveSlot(slot, app.world); render(); } break;
     case 'load': {
